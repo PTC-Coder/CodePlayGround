@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/CodePlayGround/CodePlayGround/Hello_World/build/main.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/Hello_World/build/main.o: \
  main.c c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\newlib.h \

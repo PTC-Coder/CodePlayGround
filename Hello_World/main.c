@@ -47,9 +47,9 @@ int main(void)
     printf("Hello World!\n");
 
     while (1) {
-        LED_On(0);
+        LED_On(1);
         MXC_Delay(500000);
-        LED_Off(0);
+        LED_Off(1);
         MXC_Delay(500000);
         printf("count = %d\n", count++);
     }

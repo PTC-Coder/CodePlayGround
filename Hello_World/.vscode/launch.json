@@ -13,10 +13,10 @@
             "servertype": "jlink",
             "windows": {
                 "gdbPath": "${config:ARM_GCC_path}/bin/arm-none-eabi-gdb.exe",
-                "serverpath": "C:/Program Files/SEGGER/JLink_V796b/JLinkGDBServerCL.exe",
+                "serverpath": "C:/Program Files/SEGGER/JLink_V796l/JLinkGDBServerCL.exe",
                 "serverArgs": []
             },
-            "device": "MAX326xx",
+            "device": "MAX32666",
             "searchDir": ["${config:OCD_path}/scripts"],
             "configFiles": ["${config:OCD_path}/scripts/interface/jlink.cfg", "${config:OCD_path}/scripts/target/max32665.cfg"],
             "jlinkscript": "null",

@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/CodePlayGround/CodePlayGround/Hello_World/build/board.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/Hello_World/build/board.o: \
  C:/MaximSDK/Libraries/Boards/MAX32665/FTHR/Source/board.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \

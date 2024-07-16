@@ -1,0 +1,3 @@
+embedded:startup.tcl:28: Error: Can't find interface/C:/MaximSDK/Tools/OpenOCD/scripts/interface/jlink.cfg
+in procedure 'script' 
+at file "embedded:startup.tcl", line 28
