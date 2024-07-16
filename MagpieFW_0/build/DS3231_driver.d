@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/DS3231_driver.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//build/DS3231_driver.o: \
  DS3231_driver.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdint.h \

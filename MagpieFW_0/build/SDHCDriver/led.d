@@ -1,6 +1,6 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/SDHCDriver/led.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/build/SDHCDriver/led.o: \
  C:/MaximSDK/Libraries/MiscDrivers/LED/led.c \
- c:\users\patrick\documents\github\magpiefw_0\boards\max32665\custom\include\board.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\boards\max32665\custom\include\board.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\newlib.h \
@@ -31,19 +31,19 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/SDHCDriver/led.o: \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\machine\types.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\stdio.h \
  C:/MaximSDK/Libraries/MiscDrivers/LED/led.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\gpio.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\gpio.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gpio_regs.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\_intsup.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/max32665.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cmInstr.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cmFunc.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4_simd.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/system_max32665.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\gpio.h
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\gpio.h

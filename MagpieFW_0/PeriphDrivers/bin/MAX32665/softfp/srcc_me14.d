@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/srcc_me14.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/srcc_me14.o: \
  c:\maximsdk\libraries\periphdrivers\source\srcc\srcc_me14.c \
  c:\maximsdk\libraries\periphdrivers\include\max32665\srcc.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/srcc_regs.h \

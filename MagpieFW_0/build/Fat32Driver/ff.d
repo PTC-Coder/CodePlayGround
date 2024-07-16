@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/Fat32Driver/ff.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/build/Fat32Driver/ff.o: \
  source/ff.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\string.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
@@ -19,7 +19,7 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/Fat32Driver/ff.o: \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\strings.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\string.h \
  source/ff.h \
- C:/Users/Patrick/Documents/GitHub/MagpieFW_0/SDHC/ff15/source/conf/ffconf.h \
+ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/SDHC/ff15/source/conf/ffconf.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\_intsup.h \
@@ -39,27 +39,27 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/Fat32Driver/ff.o: \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\sched.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\machine\types.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\stdio.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/max32665.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cmInstr.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cmFunc.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4_simd.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/system_max32665.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\gpio.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\gpio.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gpio_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gcr_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\sdhc.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\sdhc.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/sdhc_regs.h \
  ..//Include/sdhc_resp_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\rtc.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\rtc.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/rtc_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\tmr.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\tmr.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/tmr_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_delay.h
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_delay.h

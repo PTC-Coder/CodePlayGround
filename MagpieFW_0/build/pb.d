@@ -1,7 +1,7 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/pb.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//build/pb.o: \
  C:/MaximSDK/Libraries/MiscDrivers/PushButton/pb.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stddef.h \
- c:\users\patrick\documents\github\magpiefw_0\boards\max32665\custom\include\board.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\boards\max32665\custom\include\board.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\newlib.h \

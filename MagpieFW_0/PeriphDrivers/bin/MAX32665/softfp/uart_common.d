@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/uart_common.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/uart_common.o: \
  c:\maximsdk\libraries\periphdrivers\source\uart\uart_common.c \
  c:\maximsdk\libraries\periphdrivers\source\uart\uart_common.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/uart_regs.h \

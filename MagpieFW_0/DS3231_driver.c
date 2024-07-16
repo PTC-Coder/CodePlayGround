@@ -734,11 +734,8 @@ uint32_t DS3231_readAllRegisters(uint8_t * buffer, uint16_t size)
   
   if (false == ds3231_initialized)
   {
-  #ifdef DS3231_ON_PAM
-    DS3231_testDSPresence();
-  #else
+
     DS3231_init();
-  #endif
   }
   
   if (true == ds3231_initialized)

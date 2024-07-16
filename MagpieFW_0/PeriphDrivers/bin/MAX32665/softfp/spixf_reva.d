@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/spixf_reva.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/spixf_reva.o: \
  c:\maximsdk\libraries\periphdrivers\source\spixf\spixf_reva.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stddef.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \

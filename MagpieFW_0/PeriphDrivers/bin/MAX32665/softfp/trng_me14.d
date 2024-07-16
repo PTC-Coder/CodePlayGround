@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/trng_me14.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/trng_me14.o: \
  c:\maximsdk\libraries\periphdrivers\source\trng\trng_me14.c \
  c:\maximsdk\libraries\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/max32665.h \

@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/icc_reva.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/icc_reva.o: \
  c:\maximsdk\libraries\periphdrivers\source\icc\icc_reva.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stddef.h \
  c:\maximsdk\libraries\periphdrivers\include\max32665\mxc_device.h \

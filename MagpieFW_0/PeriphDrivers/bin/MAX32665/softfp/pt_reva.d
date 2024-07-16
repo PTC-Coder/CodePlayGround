@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/pt_reva.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/pt_reva.o: \
  c:\maximsdk\libraries\periphdrivers\source\pt\pt_reva.c \
  c:\maximsdk\libraries\periphdrivers\include\max32665\pt.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \

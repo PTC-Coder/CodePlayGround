@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/trng_revb.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/trng_revb.o: \
  c:\maximsdk\libraries\periphdrivers\source\trng\trng_revb.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdlib.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\machine\ieeefp.h \

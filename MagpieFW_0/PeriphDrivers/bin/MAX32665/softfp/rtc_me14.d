@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/rtc_me14.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/rtc_me14.o: \
  c:\maximsdk\libraries\periphdrivers\source\rtc\rtc_me14.c \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gpio_regs.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \

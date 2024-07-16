@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/lp_me14.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/lp_me14.o: \
  c:\maximsdk\libraries\periphdrivers\source\lp\lp_me14.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \

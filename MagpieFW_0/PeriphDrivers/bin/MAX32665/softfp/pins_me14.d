@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/pins_me14.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/pins_me14.o: \
  c:\maximsdk\libraries\periphdrivers\source\sys\pins_me14.c \
  c:\maximsdk\libraries\periphdrivers\include\max32665\gpio.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gpio_regs.h \

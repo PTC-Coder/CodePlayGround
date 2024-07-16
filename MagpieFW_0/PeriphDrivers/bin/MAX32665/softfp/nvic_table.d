@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/nvic_table.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/nvic_table.o: \
  c:\maximsdk\libraries\periphdrivers\source\sys\nvic_table.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\string.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \

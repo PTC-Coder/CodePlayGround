@@ -128,6 +128,15 @@ struct _mxc_uart_req_t {
     mxc_uart_complete_cb_t callback; ///< Pointer to function called when transaction is complete
 };
 
+/**
+ * @brief      Clock settings */
+typedef enum {
+    MXC_UART_APB_CLK = 0,
+    MXC_UART_EXT_CLK = 1,
+    MXC_UART_IBRO_CLK = 2,
+    MXC_UART_ERFO_CLK = 3,
+} mxc_uart_clock_t;
+
 /***** Function Prototypes *****/
 
 /* ************************************************************************* */

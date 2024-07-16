@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/gpio_common.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/gpio_common.o: \
  c:\maximsdk\libraries\periphdrivers\source\gpio\gpio_common.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stddef.h \
  c:\maximsdk\libraries\periphdrivers\source\gpio\gpio_common.h \

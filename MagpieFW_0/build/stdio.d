@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/stdio.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//build/stdio.o: \
  C:/MaximSDK/Libraries/MiscDrivers/stdio.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\errno.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\reent.h \
@@ -60,7 +60,7 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/stdio.o: \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_sys.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gcr_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\boards\max32665\custom\include\board.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\boards\max32665\custom\include\board.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/uart.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/uart_regs.h \

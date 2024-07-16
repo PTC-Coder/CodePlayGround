@@ -1,7 +1,7 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/SDHCDriver/sdhc_lib.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/build/SDHCDriver/sdhc_lib.o: \
  Source/sdhc_lib.c \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/max32665.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdint.h \
@@ -15,16 +15,16 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0/build/SDHCDriver/sdhc_lib.o: \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cmFunc.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4_simd.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/system_max32665.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\gpio.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_pins.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\gpio.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gpio_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_errors.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_assert.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_sys.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/gcr_regs.h \
- c:\users\patrick\documents\github\magpiefw_0\periphdrivers\include\max32665\sdhc.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\periphdrivers\include\max32665\sdhc.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/sdhc_regs.h \
  Include/sdhc_lib.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\string.h \

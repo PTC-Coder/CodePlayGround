@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/mxc_lock.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/mxc_lock.o: \
  c:\maximsdk\libraries\periphdrivers\source\sys\mxc_lock.c \
  c:\maximsdk\libraries\periphdrivers\include\max32665\mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/max32665.h \

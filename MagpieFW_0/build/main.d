@@ -1,5 +1,5 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/main.o: main.c \
- c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//build/main.o: \
+ main.c c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdio.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\newlib.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_newlib_version.h \
@@ -58,7 +58,7 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/main.o: main.c \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/sdhc_regs.h \
  C:/MaximSDK/Libraries/MiscDrivers/LED/led.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_assert.h \
- c:\users\patrick\documents\github\magpiefw_0\boards\max32665\custom\include\board.h \
+ c:\users\ptcha\onedrive\documents\github\codeplayground\magpiefw_0\boards\max32665\custom\include\board.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/gpio.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/tmr.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/tmr_regs.h \
@@ -76,11 +76,11 @@ C:/Users/Patrick/Documents/GitHub/MagpieFW_0//build/main.o: main.c \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_lock.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/i2c.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/i2c_regs.h \
- C:/Users/Patrick/Documents/GitHub/MagpieFW_0/SDHC/Include/sdhc_lib.h \
+ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/SDHC/Include/sdhc_lib.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/sdhc.h \
- C:/Users/Patrick/Documents/GitHub/MagpieFW_0/SDHC/Include/sdhc_resp_regs.h \
- C:/Users/Patrick/Documents/GitHub/MagpieFW_0/SDHC/ff15/source/ff.h \
- C:/Users/Patrick/Documents/GitHub/MagpieFW_0/SDHC/ff15/source/conf/ffconf.h \
+ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/SDHC/Include/sdhc_resp_regs.h \
+ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/SDHC/ff15/source/ff.h \
+ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0/SDHC/ff15/source/conf/ffconf.h \
  utils.h C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/dma.h \
  C:/MaximSDK/Libraries/CMSIS/5.9.0/DSP/Include/arm_math.h \
  C:/MaximSDK/Libraries/CMSIS/5.9.0/DSP/Include/arm_math_types.h \

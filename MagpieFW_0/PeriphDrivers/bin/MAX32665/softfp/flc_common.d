@@ -1,4 +1,4 @@
-C:/Users/Patrick/Documents/GitHub/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/flc_common.o: \
+C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//PeriphDrivers/bin/MAX32665/softfp/flc_common.o: \
  c:\maximsdk\libraries\periphdrivers\source\flc\flc_common.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\string.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\_ansi.h \
