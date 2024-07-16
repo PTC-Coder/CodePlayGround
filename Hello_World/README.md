@@ -1,10 +1,15 @@
 ## Description
 
-A basic getting started program.
+A basic getting started program with the ability to flash and debug using Segger J-Link
 
 This version of Hello_World prints an incrementing count to the console UART and toggles a GPIO (LED0) once every 500 ms.
 
 Please check the board.c file in ${MSDKPath}\Libraries\Boards\MAX32665\${BoardName}\Source path to learn switch and LED pins for specific board.
+
+Flash using "JLink-Flash" option instead of the "Flash" or "Flash & Run" option.  
+```
+Make sure to create a c:\temp directory before using this functionality
+```
 
 
 ## Software
