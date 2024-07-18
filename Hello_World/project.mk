@@ -17,3 +17,22 @@ SBT=0
 PROJ_CFLAGS+=-mno-unaligned-access
 
 DEBUG=1
+
+PROJ_LDFLAGS += -Wl,--print-memory-usage
+
+
+VPATH += RTT
+IPATH += RTT
+
+#SRCS += SEGGER_RTT_ASM_ARMv7M.S
+
+#SRCS += SEGGER_RTT.c
+#SRCS += SEGGER_RTT_printf.c
+#SRCS += SEGGER_RTT_Syscalls_GCC.c
+#SRCS += SEGGER_RTT_Syscalls_IAR.c
+#SRCS += SEGGER_RTT_Syscalls_KEIL.c
+#SRCS += SEGGER_RTT_Syscalls_SES.c
+
+
+
+

@@ -47,4 +47,8 @@ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/Hello_World/build/main.o
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_assert.h \
  C:/MaximSDK/Libraries/Boards/MAX32665/FTHR/Include/board.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/gpio.h \
- C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_delay.h
+ C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/mxc_delay.h \
+ RTT/SEGGER_RTT.h RTT/SEGGER_RTT_Conf.h \
+ c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\stdlib.h \
+ c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\machine\stdlib.h \
+ c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\alloca.h

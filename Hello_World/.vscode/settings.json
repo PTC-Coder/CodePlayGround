@@ -36,6 +36,7 @@
     "Make_path":"${config:MAXIM_PATH}/Tools/GNUTools/Make",
     "MSYS_path":"${config:MAXIM_PATH}/Tools/MSYS2",
 
+
     "C_Cpp.default.includePath": [
         "${workspaceFolder}",
         "${workspaceFolder}/**",
@@ -56,6 +57,9 @@
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/Touchscreen",
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/EEPROM",
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/CODEC"
+
+
+
     ],
     "C_Cpp.default.browse.path": [
         "${workspaceFolder}",
@@ -73,12 +77,20 @@
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/ADC",
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/EEPROM",
         "${config:MAXIM_PATH}/Libraries/MiscDrivers/CODEC"
+
+
+
     ],
     "C_Cpp.default.defines": [
         
     ],
     "C_Cpp.default.forcedInclude": [
-        "${workspaceFolder}/build/project_defines.h"
-    ]
+        "${workspaceFolder}/build/project_defines.h",
+
+    ],
+    "files.associations": {
+        "segger_rtt.h": "c",
+        "mxc_delay.h": "c"
+    }
 }
 

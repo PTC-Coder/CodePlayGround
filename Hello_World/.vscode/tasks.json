@@ -67,7 +67,7 @@
         {            
             "label": "JLink Flash Upload",
             "type": "shell",
-            "command": "\"c:/Program Files/SEGGER/JLink_V796l/jlink.exe\" -device MAX32666 -CommandFile ${workspaceFolder}\\.vscode\\FlashScript.jlink",            
+            "command": "\"c:/Program Files/SEGGER/JLink_V796t/jlink.exe\" -device MAX32666 -CommandFile ${workspaceFolder}\\.vscode\\FlashScript.jlink",            
         },
         {
             "label": "flash & run",
