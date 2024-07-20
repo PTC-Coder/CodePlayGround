@@ -101,7 +101,8 @@
     ],
     "cortex-debug.variableUseNaturalFormat": true,
     "files.associations": {
-        "arm_fir_decimate_fast_q31_bob.h": "c"
+        "arm_fir_decimate_fast_q31_bob.h": "c",
+        "*.txt": "c"
     }
 }
 

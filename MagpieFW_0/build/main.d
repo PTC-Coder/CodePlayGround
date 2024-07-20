@@ -121,4 +121,8 @@ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/MagpieFW_0//build/main.o
  DS3231_driver.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\time.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\machine\time.h \
- periphDirectAccess.txt arm_fir_decimate_fast_q31_bob.h
+ C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/rtc.h \
+ C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32665/Include/rtc_regs.h \
+ C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32665/tmr.h \
+ data_converters.h periphDirectAccess.txt arm_fir_decimate_fast_q31_bob.h \
+ arm_fir_decimate_fast_q31_HB.h
