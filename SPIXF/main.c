@@ -43,9 +43,9 @@
 /***** Definitions *****/
 #define EXT_FLASH_BAUD 8000000 /* SPI clock rate to communicate with the external flash */
 #define EXT_FLASH_ADDR 0
-#define EXT_FLASH_SPIXFC_WIDTH Ext_Flash_DataLine_Dual
+#define EXT_FLASH_SPIXFC_WIDTH Ext_Flash_DataLine_Single
 
-#define BUFF_SIZE 512
+#define BUFF_SIZE  2112
 
 /***** Functions *****/
 
@@ -160,7 +160,7 @@ int main(void)
 {
     int fail = 0;
     uint32_t id;
-    void (*func)(void);
+    //void (*func)(void);
     uint8_t rx_buf[BUFF_SIZE];
     int rx_len = (uint32_t)(&__load_length_xip);
     int remain = rx_len;
@@ -232,6 +232,25 @@ int main(void)
     } else {
         printf("[SUCCESS]--> First 128k sector succesfully erased.\n\n");
     }
+
+    
+    err = Ext_Flash_Read(0x000000, rx_buf, 200, EXT_FLASH_SPIXFC_WIDTH);
+
+    printf("===== Address [0x%06xh], Chunk [%d] =====\n", 0x000000, 200);
+    for (int i = 0; i < 200; i++) {
+        printf("%02xh\t", rx_buf[i]); 
+    }
+    printf("\n\n");
+    printf("...");
+    printf("\n\n");
+    
+    err = Ext_Flash_Read(0x01F338, rx_buf, 200, EXT_FLASH_SPIXFC_WIDTH);
+
+    printf("===== Address [0x%06xh], Chunk [%d] =====\n", 0x01F338, 200);
+    for (int i = 0; i < 200; i++) {
+        printf("%02xh\t", rx_buf[i]); 
+    }
+    printf("\n\n");
     
 
     // // Enable Quad mode if we are using quad
@@ -271,12 +290,23 @@ int main(void)
     } else {
         printf("[SUCCESS]--> External Flash Programmed\n\n");
     }
-
-    printf("Verifying External Flash Written Memory ...\n");
+    
     while (remain) {
         int chunk = ((remain > BUFF_SIZE) ? BUFF_SIZE : remain);
+
+        printf("Verifying External Flash Written Memory from flash address 0x%08x ...\n", EXT_FLASH_ADDR + rx_len - remain);
+        err = Ext_Flash_DataRead(EXT_FLASH_ADDR + rx_len - remain);
+        if(E_NO_ERROR != err){
+            printf("[ERROR]--> Error reading data into buffer: %d\n", err);
+            break;
+        }
+
         err = Ext_Flash_Read(EXT_FLASH_ADDR + rx_len - remain, rx_buf, chunk,
                                   EXT_FLASH_SPIXFC_WIDTH);
+        if(E_NO_ERROR != err){
+            printf("[ERROR]--> Error reading data from buffer: %d\n", err);
+            break;
+        }
 
         printf("===== Chunk [%d] =====\n", chunk);
         for (int i = 0; i < rx_len; i++) {
@@ -298,17 +328,21 @@ int main(void)
         remain -= chunk;
     }
 
-    if (fail != 0) {
+
+// ----   This section doesn't work unless the Flash is a NOR type.  Required to do execution in place (XIP)
+/*     if (fail != 0) {
         printf("\nExample Failed\n");
         return E_FAIL;
     } else {
+        spixf_cfg_setup();
+
         printf("Jumping to external flash (@ 0x%08x), watch for blinking LED.\n\n",
             (MXC_XIP_MEM_BASE | 0x1));
         func = (void (*)(void))(MXC_XIP_MEM_BASE | 0x1);
         func();
         printf("Returned from external flash\n\n");
-    }
+    } */
 
-    printf("\nExample Succeeded\n");
+    printf("\n ************** Example Succeeded ****************\n");
     return E_NO_ERROR;
 }

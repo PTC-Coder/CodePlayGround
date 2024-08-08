@@ -39,16 +39,6 @@ extern "C" {
  * @defgroup Ext_Flash_driver Ext_Flash SPI Multi-I/O Flash Memory Driver
  * @{
  */
-/* **** Definitions **** */
-
-#define EF_E_SUCCESS 0
-#define EF_E_ERROR -1
-#define EF_E_BUSY -99
-#define EF_E_BAD_STATE -98
-#define EF_E_TIME_OUT -97
-#define EF_E_BAD_PARAM -96
-#define EF_E_ERASE_FAILED -95
-
 
 #define EXT_FLASH_NAME "W25N02KVxxIR"
 
@@ -70,6 +60,20 @@ extern "C" {
 // Deprecated name. Please use EXT_FLASH_READ_DUMMY
 #define EXT_FLASH_Read_DUMMY EXT_FLASH_READ_DUMMY
 #endif
+
+
+/**
+ * Enumeration type to select the size for an Erase command.
+ */
+typedef enum {
+    EF_E_SUCCESS = 0,
+    EF_E_ERROR = -1,
+    EF_E_BUSY = -99,
+    EF_E_BAD_STATE = -98,
+    EF_E_TIME_OUT = -97,
+    EF_E_BAD_PARAM = -96,
+    EF_E_ERASE_FAILED = -95,
+} Ext_Flash_Error_t;
 
 /**
  * Enumeration type to select the size for an Erase command.
@@ -128,21 +132,21 @@ typedef struct {
  * @retval     0         Success
  * @retval     Non-zero  Error condition
  */
-int Ext_Flash_Configure(Ext_Flash_Config_t *cfg);
+Ext_Flash_Error_t Ext_Flash_Configure(Ext_Flash_Config_t *cfg);
 
 /**
  * @brief      Initialize SPI configuration and reset Ext_Flash
  * @retval     0         Success
  * @retval     Non-zero  Error condition
  */
-int Ext_Flash_Init(void);
+Ext_Flash_Error_t Ext_Flash_Init(void);
 
 /**
  * @brief       Reset the Ext_Flash flash memory.
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Reset(void);
+Ext_Flash_Error_t Ext_Flash_Reset(void);
 
 /**
  * @brief       Read manufacturer ID.
@@ -156,10 +160,19 @@ uint32_t Ext_Flash_ID(void);
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Quad(int enable);
+Ext_Flash_Error_t Ext_Flash_Quad(int enable);
 
 /**
- * @brief       Read data out by using 4-wire SPI mode.
+ * @brief       Read data out from the Flash Memory to Flash buffer
+ * @param       address         Start address to read from
+ * @retval      0         Success
+ * @retval      Non-zero  Error condition
+ */
+Ext_Flash_Error_t Ext_Flash_DataRead(uint32_t address);
+
+
+/**
+ * @brief       Read data out from the Flash data buffer by using 4-wire SPI mode.
  * @param       address         Start address to read from
  * @param       rx_buf          Pointer to the buffer of receiving data
  * @param       rx_len          Size of the data to read
@@ -167,7 +180,7 @@ int Ext_Flash_Quad(int enable);
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line);
+Ext_Flash_Error_t Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line);
 
 /**
  * @brief       Program the memory to @p tx_buf and length @p tx_len, applies to both SPI and QPI modes.
@@ -181,7 +194,7 @@ int Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
+Ext_Flash_Error_t Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
                            Ext_Flash_DataLine_t d_line);
 
 
@@ -191,7 +204,7 @@ int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Unprotect_StatusRegister(void);
+Ext_Flash_Error_t Ext_Flash_Unprotect_StatusRegister(void);
 
 /**
  * @brief       Bulk erase the Ext_Flash flash memory.
@@ -199,7 +212,7 @@ int Ext_Flash_Unprotect_StatusRegister(void);
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Bulk_Erase(void);
+Ext_Flash_Error_t Ext_Flash_Bulk_Erase(void);
 
 /**
  * @brief       Erase memory segments
@@ -208,21 +221,32 @@ int Ext_Flash_Bulk_Erase(void);
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
-int Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size);
+Ext_Flash_Error_t Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size);
 
 /**
  * @brief       Read status register.
  * @param       buf      Pointer to store the value of the status register.
  * @param       reg_num  Selects which status register to read (see #Ext_Flash_StatusReg_t for valid values)
  */
-int Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num);
+Ext_Flash_Error_t Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num);
 
 /**
  * @brief       Write status register
  * @param       value  Value to write to the status register.
  * @param       reg_num  Selects which status register to write (see #Ext_Flash_StatusReg_t for valid values)
  */
-int Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num);
+Ext_Flash_Error_t Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num);
+
+/**
+ * @brief       Execute command to move data from buffer to flash memory
+ * @details     After the data is written to the buffer it needs to be transferred to the flash memory.
+ *              Executing the command to do the transfer.
+ * @param       address         Start address to program.
+ * 
+ * @retval      0           Success
+ * @retval      Non-zero    Error condition    
+ */
+Ext_Flash_Error_t Ext_Flash_Prog_Execute(uint32_t address);
 
 /**
  * @brief       Configures write protection scheme to protect data stored in the flash block in which "addr" is located
@@ -235,7 +259,7 @@ int Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num);
  * @retval      0           Success
  * @retval      Non-zero    Error condition    
  */
-int Ext_Flash_Block_WP(uint32_t addr, uint32_t begin);
+Ext_Flash_Error_t Ext_Flash_Block_WP(uint32_t addr, uint32_t begin);
 
 /**
  * @brief       Returns the start and end address of the available flash memory based on the current write protection scheme

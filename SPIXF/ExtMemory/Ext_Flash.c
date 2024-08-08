@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "Ext_Flash.h"
+#include "mxc_delay.h"
 
 /**
  * @ingroup w25
@@ -92,6 +93,8 @@
 #define W25N0_PROG_DATA_LOAD   0x02
 #define W25N0_RAND_PROG_DATA_LOAD  0x84
 
+#define W25N0_PROG_EXECUTE 0x10
+
 #define W25N0_PAGE_DATA_READ       0x13
 #define W25N0_READ                 0x03
 
@@ -109,7 +112,7 @@ static uint8_t g_is_configured = 0;
 /* **** Static Functions **** */
 
 /* ************************************************************************* */
-static int flash_busy()
+static Ext_Flash_Error_t flash_busy()
 {
     uint8_t buf;
 
@@ -123,7 +126,7 @@ static int flash_busy()
 }
 
 /* ************************************************************************* */
-static int is_erase_failed()
+static Ext_Flash_Error_t is_erase_failed()
 {
     uint8_t buf;
 
@@ -137,9 +140,9 @@ static int is_erase_failed()
 }
 
 /* ************************************************************************* */
-static int write_enable()
+static Ext_Flash_Error_t write_enable()
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     uint8_t cmd = W25N0_CMD_WRITE_EN;
     uint8_t buf = 0;
 
@@ -160,9 +163,9 @@ static int write_enable()
 }
 
 /* ************************************************************************* */
-static int inline read_reg(uint8_t cmd, uint8_t *buf)
+static Ext_Flash_Error_t inline read_reg(uint8_t cmd, uint8_t *buf)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
 
     if (!buf) {
         return EF_E_BAD_PARAM;
@@ -182,9 +185,9 @@ static int inline read_reg(uint8_t cmd, uint8_t *buf)
 }
 
 /* ************************************************************************* */
-static int inline read_status_reg(uint8_t* cmd, uint8_t *buf)
+static Ext_Flash_Error_t inline read_status_reg(uint8_t* cmd, uint8_t *buf)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
 
     if (!buf) {
         return EF_E_BAD_PARAM;
@@ -204,9 +207,9 @@ static int inline read_status_reg(uint8_t* cmd, uint8_t *buf)
 }
 
 /* ************************************************************************* */
-static int inline write_reg(uint8_t *buf, unsigned len)
+static Ext_Flash_Error_t inline write_reg(uint8_t *buf, unsigned len)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
 
     if (!buf || (len == 0)) {
         return EF_E_BAD_PARAM;
@@ -226,9 +229,9 @@ static int inline write_reg(uint8_t *buf, unsigned len)
 
 /* **** Functions **** */
 
-int Ext_Flash_Configure(Ext_Flash_Config_t *cfg)
+Ext_Flash_Error_t Ext_Flash_Configure(Ext_Flash_Config_t *cfg)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
 
     if (cfg == NULL) {
         return EF_E_BAD_PARAM;
@@ -242,7 +245,7 @@ int Ext_Flash_Configure(Ext_Flash_Config_t *cfg)
 
 /* ************************************************************************* */
 
-int Ext_Flash_Init(void)
+Ext_Flash_Error_t Ext_Flash_Init(void)
 {
     if (!g_is_configured) {
         return EF_E_BAD_STATE;
@@ -252,17 +255,18 @@ int Ext_Flash_Init(void)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Reset(void)
+Ext_Flash_Error_t Ext_Flash_Reset(void)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     int busy_count = 0;
     uint8_t cmd = W25N0_CMD_RST_EN;
 
-    // Send the Reset command
+    // Send the Enable Reset command
     if ((err = g_cfg.write(&cmd, 1, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
         return err;
     }
 
+    // Send reset command
     cmd = W25N0_CMD_RST_MEM;
     if ((err = g_cfg.write(&cmd, 1, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
         return err;
@@ -281,7 +285,7 @@ int Ext_Flash_Reset(void)
 /* ************************************************************************* */
 uint32_t Ext_Flash_ID(void)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     uint8_t cmd = W25N0_CMD_ID;
     uint8_t id[W25N0_ID_LEN] = { 0 };
 
@@ -301,7 +305,7 @@ uint32_t Ext_Flash_ID(void)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Quad(int enable)
+Ext_Flash_Error_t Ext_Flash_Quad(int enable)
 {
     int err = EF_E_SUCCESS;
     uint8_t pre_buf = 0;
@@ -356,51 +360,54 @@ int Ext_Flash_Quad(int enable)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line)
+Ext_Flash_Error_t Ext_Flash_DataRead(uint32_t address)
 {
     int err = EF_E_SUCCESS;
-    uint8_t cmd[3] = { W25N0_READ, (address & 0xFF00) >> 8, address & 0xFF};
+    uint8_t cmd[4] = {W25N0_PAGE_DATA_READ, 0x00, 0x00, 0x00};
+
+    while (flash_busy()) {
+        MXC_Delay(1000);
+    }
+
+    cmd[2] = (uint8_t)((address & 0xFF00) >> 8);
+    cmd[3] = (uint8_t)(address);
+ 
+    // Send command & address 
+    if ((err = g_cfg.write(&cmd[0], 4, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
+        return err;
+    }
+
+    volatile int timeout = 0;
+    while (flash_busy()) {
+        timeout++;
+        if (timeout > 10000) {
+            return EF_E_TIME_OUT;
+        }
+    }
+
+    return EF_E_SUCCESS;
+}
+
+/* ************************************************************************* */
+Ext_Flash_Error_t Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line)
+{
+    int err = EF_E_SUCCESS;
+    uint8_t cmd[4] = { W25N0_READ, 0x00, 0x00, 0x00};
     uint8_t dummy_bits = 0x00;
 
     if (flash_busy()) {
-        return EF_E_BUSY;
+        MXC_Delay(1000);
     }
 
-    //TODO: figure out different read speed
-    // Select approriate command for the desired read mode
-    // if (d_line == Ext_Flash_DataLine_Single) {
-    //     cmd[0] = EXT_FLASH_CMD_READ;
-    //     dummy_bits = EXT_FLASH_READ_DUMMY;
-    // } else if (d_line == Ext_Flash_DataLine_Dual) {
-    //     cmd[0] = EXT_FLASH_CMD_DREAD;
-    //     dummy_bits = EXT_FLASH_DREAD_DUMMY;
-    // } else {
-    //     cmd[0] = EXT_FLASH_CMD_QREAD;
-    //     dummy_bits = EXT_FLASH_QREAD_DUMMY;
-    // }
+    cmd[1] = (uint8_t)((address & 0xFF00) >> 8);
+    cmd[2] = (uint8_t)(address & 0xFF);
+    cmd[3] = dummy_bits;
 
-    // Send command
-    if ((err = g_cfg.write(&cmd[0], 1, 0, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
+
+    // Send command & address & dummy bits
+    if ((err = g_cfg.write(&cmd[0], 4, 0, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
         return err;
     }
-
-    // Send address
-    if ((err = g_cfg.write(&cmd[1], 2, 0, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
-        return err;
-    }
-
-    // // Send starting address of the read
-    // if ((err = g_cfg.write(&cmd[1], 3, 0, d_line)) != EF_E_SUCCESS) {
-    //     return err;
-    // }
-
-    // Send dummy bits
-    g_cfg.clock(dummy_bits, 0);
-
-    // Receive the data
-    // if ((err = g_cfg.read(rx_buf, rx_len, 1, d_line)) != EF_E_SUCCESS) {
-    //     return err;
-    // }
 
     if ((err = g_cfg.read(rx_buf, rx_len, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
         return err;
@@ -410,12 +417,12 @@ int Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
+Ext_Flash_Error_t Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
                            Ext_Flash_DataLine_t d_line)
 {
     int err = EF_E_SUCCESS;
     volatile int timeout = 0;
-    uint8_t cmd[4] = {W25N0_PROG_DATA_LOAD, 0x00, 0x00, 0x00};
+    uint8_t cmd[3] = {W25N0_PROG_DATA_LOAD, 0x00, 0x00};
     uint32_t len = 0;
     uint32_t next_page = 0;
     uint8_t *pWrite_Data = NULL;
@@ -444,9 +451,8 @@ int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
             }
         }
 
-        cmd[1] = (address >> 16) & 0xFF;
-        cmd[2] = (address >> 8) & 0xFF;
-        cmd[3] = address & 0xFF;
+        cmd[1] = (uint8_t)((address & 0xFF00) >> 8);
+        cmd[2] = (uint8_t)(address & 0xff);
 
         // Send the command and dummy bits
         if (d_line == Ext_Flash_DataLine_Quad) {
@@ -460,7 +466,7 @@ int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
         }
 
         // Send the address
-        if ((err = g_cfg.write(&cmd[1], 3, 0, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
+        if ((err = g_cfg.write(&cmd[1], 2, 0, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
             return err;
         }
 
@@ -496,12 +502,18 @@ int Ext_Flash_Program_Page(uint32_t address, uint8_t *tx_buf, uint32_t tx_len,
                 return EF_E_TIME_OUT;
             }
         }
+
+        //Transfer data from buffer to flash memory
+        if(EF_E_SUCCESS !=  Ext_Flash_Prog_Execute(address))
+        {
+            return EF_E_ERROR;
+        }
     }
     return EF_E_SUCCESS;
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Unprotect_StatusRegister(void)
+Ext_Flash_Error_t Ext_Flash_Unprotect_StatusRegister(void)
 {
     uint8_t cmd[3] = {W25N0_CMD_WRITE_SR, W25N0_PROT_REG, 0x00};
 
@@ -509,7 +521,7 @@ int Ext_Flash_Unprotect_StatusRegister(void)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Bulk_Erase(void)
+Ext_Flash_Error_t Ext_Flash_Bulk_Erase(void)
 {
     int err = EF_E_SUCCESS;
     int blockCount = 0;
@@ -543,9 +555,9 @@ int Ext_Flash_Bulk_Erase(void)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size)
+Ext_Flash_Error_t Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size)
 {
-    int err = EF_E_SUCCESS;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     uint8_t cmd[4] = { 0 };
     volatile int timeout = 0;
 
@@ -574,9 +586,10 @@ int Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size)
         break;
     }
 
-    cmd[1] = (address >> 16) & 0xFF;
-    cmd[2] = (address >> 8) & 0xFF;
-    cmd[3] = address & 0xFF;
+    cmd[1] = 0x00;
+    cmd[2] = (uint8_t)((address & 0xFF00) >> 8);
+    cmd[3] = (uint8_t)address;
+
 
     // Send the command and the address
     if ((err = g_cfg.write(&cmd[0], 4, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
@@ -598,7 +611,7 @@ int Ext_Flash_Erase(uint32_t address, Ext_Flash_Erase_t size)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num)
+Ext_Flash_Error_t Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num)
 {
     uint8_t cmd[3] = {W25N0_CMD_READ_SR, 0x00, 0x00};
 
@@ -624,7 +637,7 @@ int Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num)
+Ext_Flash_Error_t Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num)
 {
     uint8_t cmd[3] = {W25N0_CMD_WRITE_SR, 0x00, value};
 
@@ -643,9 +656,38 @@ int Ext_Flash_Write_SR(uint8_t value, Ext_Flash_StatusReg_t reg_num)
 }
 
 /* ************************************************************************* */
-int Ext_Flash_Block_WP(uint32_t addr, uint32_t begin)
+Ext_Flash_Error_t Ext_Flash_Prog_Execute(uint32_t address)
 {
     int err = EF_E_SUCCESS;
+    volatile int timeout = 0;
+    uint8_t cmd[4] = {W25N0_PROG_EXECUTE, 0x00, 0x00, 0x00};
+
+    cmd[2]  = (uint8_t)((address & 0xFF00) >> 8);
+    cmd[3]  = (uint8_t)address;
+
+    // Send the command and the address
+    if ((err = g_cfg.write(&cmd[0], 4, 1, Ext_Flash_DataLine_Single)) != EF_E_SUCCESS) {
+        return err;
+    }
+
+    while (flash_busy()) {
+        timeout++;
+        if (timeout > 1000000000) {
+            return EF_E_TIME_OUT;
+        }
+    }
+
+    if(EF_E_SUCCESS != is_erase_failed()){
+        return EF_E_ERASE_FAILED;
+    }
+
+    return EF_E_SUCCESS;
+}
+
+/* ************************************************************************* */
+Ext_Flash_Error_t Ext_Flash_Block_WP(uint32_t addr, uint32_t begin)
+{
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     uint8_t sr1, sr2, page_num, bp, cmp;
 
     if (addr >= W25N0_DEVICE_SIZE) { // Check address valid
@@ -708,7 +750,7 @@ int Ext_Flash_Block_WP(uint32_t addr, uint32_t begin)
 /* ************************************************************************* */
 Ext_Flash_Unblk_t Ext_Flash_GetAvailableFlash(void)
 {
-    int err = 0;
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
     uint8_t sr1, sr2;
     uint32_t page_addr;
     Ext_Flash_Unblk_t free_flash;
