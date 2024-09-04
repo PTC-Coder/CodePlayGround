@@ -1,5 +1,5 @@
 # Magpie_BLE_example
-Based on Max32665 Bluetooth fitness device. Modified with custom 👞 facturer and productID. Showcases various characteristics.
+Based on Max32665 Bluetooth fitness device. Modified with ability to broadcast a custom manufacturer and productID. Showcases various characteristics.
 Refer to [BLE_fit](../../../Libraries/Cordio/docs/Applications/BLE_fit.md) documentation in the Cordio Library.
 
 ## Software
