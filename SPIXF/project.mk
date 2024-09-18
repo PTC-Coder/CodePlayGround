@@ -22,3 +22,6 @@ SBT=0
 
 VPATH += ExtMemory
 IPATH += ExtMemory
+
+VPATH += littlefs
+IPATH += littlefs
