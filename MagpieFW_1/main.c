@@ -1143,15 +1143,15 @@ SDMUX_i2cError SDMUX_I2C_init()
 	}
 
 	// I2C pins default to VDDIO for the logical high voltage, we want VDDIOH for 3.3v pullups
-	const mxc_gpio_cfg_t i2c_2_pins = {
-		.port = MXC_GPIO1,
+	const mxc_gpio_cfg_t i2c_1_pins = {
+		.port = MXC_GPIO0,
 		.mask = (MXC_GPIO_PIN_14 | MXC_GPIO_PIN_15),
 		.pad = MXC_GPIO_PAD_NONE,
 		.func = MXC_GPIO_FUNC_ALT1,
 		.vssel = MXC_GPIO_VSSEL_VDDIOH,
 		.drvstr = MXC_GPIO_DRVSTR_0,
 	};
-	MXC_GPIO_Config(&i2c_2_pins);
+	MXC_GPIO_Config(&i2c_1_pins);
 
 	if (MXC_I2C_SetFrequency(MAX32666_I2C_BUS_3V3_PULLUPS, MAX32666_I2C_CLK_SPEED) != MAX32666_I2C_CLK_SPEED)
 	{
@@ -1186,15 +1186,15 @@ DS3231_i2cError DS3231_I2C_init()
   }
 
   // I2C pins default to VDDIO for the logical high voltage, we want VDDIOH for 3.3v pullups
-  const mxc_gpio_cfg_t i2c_2_pins = {
-      .port = MXC_GPIO1,
+  const mxc_gpio_cfg_t i2c_1_pins = {
+      .port = MXC_GPIO0,
       .mask = (MXC_GPIO_PIN_14 | MXC_GPIO_PIN_15),
       .pad = MXC_GPIO_PAD_NONE,
       .func = MXC_GPIO_FUNC_ALT1,
       .vssel = MXC_GPIO_VSSEL_VDDIOH,
       .drvstr = MXC_GPIO_DRVSTR_0,
   };
-  MXC_GPIO_Config(&i2c_2_pins);
+  MXC_GPIO_Config(&i2c_1_pins);
 
   if (MXC_I2C_SetFrequency(MAX32666_I2C_BUS_3V3_PULLUPS, MAX32666_I2C_CLK_SPEED) != MAX32666_I2C_CLK_SPEED)
   {
@@ -1265,6 +1265,7 @@ void MB_LED(u_int8_t state)
 
 int main(void)
 {
+
 	char metaBuffer[32] = {0};
 	MXC_Delay(MXC_DELAY_SEC(1));
 	mxc_sdhc_cfg_t cfg;
@@ -1296,7 +1297,7 @@ int main(void)
 	static uint8_t stall;
 	static uint32_t ktrace = 0;
 
-    printf("Initializing .....\n");
+    printf("\n\nInitializing .....\n");
   
 	//Init DS3231 RTC peripheral
 	if(DS3231_I2C_NO_ERROR != DS3231_I2C_init())
@@ -1304,6 +1305,18 @@ int main(void)
 		printf("Unable to initialize DS3231 driver.\n");
 		LED_On(LED_RED);
 		return 1;
+	}
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		LED_On(LED_RED);
+		LED_On(LED_BLUE);
+		LED_On(LED_GREEN);
+		MXC_Delay(500000);
+		LED_Off(LED_RED);
+		LED_Off(LED_BLUE);
+		LED_Off(LED_GREEN);
+		MXC_Delay(500000);
 	}
 
 	#ifdef FIRST_SET_RTC
@@ -1358,6 +1371,8 @@ int main(void)
 		printf(output_msgBuffer);
 	}
 		
+
+
 	
 // magpie_new - init all the decimation filters. This allows you to change fs without re-compiling
 	arm_fir_decimate_init_q31(&Sdeci_16k_0,deci_16k_numcoeffs_0,3, &firCoeffs_16k_0[0],&firState_stage0[0],DMA_buffLen);
@@ -1385,7 +1400,7 @@ int main(void)
 
 	// magpie_new - set sample-rate and bit depth
 	//******************* set sample rate ************************
-	magpie_FS =fs_384k; // use this to set sample rate; the variable FS is also set, for writing the wav header file
+	magpie_FS =fs_48k; // use this to set sample rate; the variable FS is also set, for writing the wav header file
 	//*************************************************************
 
 	//******************* set bit depth, 1=24 bits, 0=16 bits ************************
@@ -1523,7 +1538,8 @@ int main(void)
 		MXC_Delay(500000);
 	}
 	printf("Card inserted.\n");
-	LED_On(LED_GREEN);
+
+	//MB_LED(1);
 
 	//////// FTHR2 SDCARD Enabling ////
 
@@ -1580,6 +1596,7 @@ int main(void)
 	LED_Off(LED_RED);
 	LED_Off(LED_BLUE);
 	LED_Off(LED_GREEN);
+
 	for (size_t i = 0; i < 5; i++)
 	{
 		LED_On(LED_BLUE);
@@ -1587,6 +1604,15 @@ int main(void)
 		LED_Off(LED_BLUE);
 		MXC_Delay(500000);
 	}
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		LED_On(LED_BLUE);
+		MXC_Delay(500000);
+		LED_Off(LED_BLUE);
+		MXC_Delay(500000);
+	}
+
 	printf("Start recording.\n");
 
 	LED_On(LED_GREEN);     

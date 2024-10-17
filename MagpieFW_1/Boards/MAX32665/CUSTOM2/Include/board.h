@@ -60,9 +60,9 @@ extern "C" {
 
 #define LED_RED 0
 #define LED1 LED_RED
-#define LED_BLUE 1
+#define LED_BLUE 2
 #define LED2 LED_BLUE
-#define LED_GREEN 2
+#define LED_GREEN 1
 #define LED3 LED_GREEN
 
 #ifndef HCI_UART
