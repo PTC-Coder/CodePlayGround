@@ -182,6 +182,7 @@
 //****************************************************************
 //For the CS pin while using the SPI2 on the FTHR
 #define MXC_GPIO_PORT_OUT0 MXC_GPIO0
+#define MXC_GPIO_PORT_OUT1 MXC_GPIO1
 
 // bit-bang slave-sel during ADC init
 #define MXC_GPIO_PIN_OUT16 MXC_GPIO_PIN_16
@@ -192,20 +193,21 @@
 //Pin 0.21 use for hardware reset
 #define MXC_GPIO_PIN_OUT21 MXC_GPIO_PIN_21
 
-#define MXC_GPIO_PIN_OUT5 MXC_GPIO_PIN_5  // gpio5, pin 6 on feather, green LED on motherboard
+#define MXC_GPIO_PIN_OUT14 MXC_GPIO_PIN_14  // gpio1.14, green LED on motherboard
 
-#define MXC_GPIO_PIN_OUT3 MXC_GPIO_PIN_3  // gpio3, pin 5 on feather, blue led on motherboard
+#define MXC_GPIO_PIN_OUT3 MXC_GPIO_PIN_3  // gpio3, pin 5 on feather, blue led on motherboard  <---- This should P0.4 instead on FTC board
 
-#define MXC_GPIO_PIN_OUT4 MXC_GPIO_PIN_4  // gpio4, pin 7 on feather
+#define MXC_GPIO_PIN_OUT4 MXC_GPIO_PIN_4  // this is now the pin to use instead of gpio3
 
 #define MXC_GPIO_PIN_OUT12 MXC_GPIO_PIN_12  // gpio12, pin 4 on feather connected to pin 6 of p8 header, used for timing code
 
 #define MXC_GPIO_PIN_OUT30  MXC_GPIO_PIN_30 //Blue LED on FTHR board (not motherboard!)
 
+#define MXC_GPIO_PIN_OUT6  MXC_GPIO_PIN_6 //CS_EN pin
 
 // Parameters for PWM output
 #define PORT_PWM MXC_GPIO0 //port
-#define PIN_PWM MXC_GPIO_PIN_4 //pin
+#define PIN_PWM MXC_GPIO_PIN_12 //pin
 #define FREQ 200000 // (Hz)
 #define DUTY_CYCLE 75 // (%)
 #define PWM_TIMER MXC_TMR0 // must change PWM_PORT and PWM_PIN if changed
@@ -280,11 +282,14 @@ FRESULT set_timestamp (
 
 mxc_gpio_cfg_t gpio_out16;
 mxc_gpio_cfg_t gpio_out20; // adc clock enable
-mxc_gpio_cfg_t gpio_out5; //pin 6 on feather, green LED on motherboard
-mxc_gpio_cfg_t gpio_in3; // pin 5 on feather, blue led on motherboard
+mxc_gpio_cfg_t gpio_outGreenLED; //pin 6 on feather, green LED on motherboard
+// mxc_gpio_cfg_t gpio_in3; // pin 5 on feather, blue led on motherboard
+mxc_gpio_cfg_t gpio_in4; // use this instead of GPIO P0.3
 
 mxc_gpio_cfg_t gpio_in30; // the blue LED on feather (not on motherboard!)
 mxc_gpio_cfg_t gpio_out12; // pin 4 on feather, used for timing etsts
+
+mxc_gpio_cfg_t gpio_out1_6; // to control CS_EN pin
 
 // structs for spi port
 mxc_spi_req_t SPI2_req_master_ctrl_write; // use this struct when using spi2 to write to the adc control port
@@ -961,7 +966,7 @@ void DMA0_IRQHandler()
 	uint32_t k,i,j;
 	uint8_t dmaByte2,dmaByte1,dmaByte0;
     int flags;
-	//MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+	//MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
     //memcpy(dmaDestBuffCopy,dmaDestBuff,DMA_buffLen_bytes);
 
     MXC_DMA_Handler(MXC_DMA0);
@@ -972,7 +977,7 @@ void DMA0_IRQHandler()
 	k = DMA_buffLen; // loop counter
 	i = 0; // byte pointer
 	j=0; // word pointer
-	//MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+	//MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 	// DMA byte-to-signed 32 bit word assembly process
 	// Note that if the DMA streaming is turned off to run other processes, you
@@ -1005,38 +1010,38 @@ void DMA0_IRQHandler()
 	switch(magpie_FS) { // do the correct filter for each sample-rate
 
 		case fs_16k: // timing test, 5ms
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 			arm_fir_decimate_fast_q31_bob(&Sdeci_16k_0,dmaDestBuff_32bit,deci_stage0_out,DMA_buffLen);// use 2x buffer to save mem (dont need a 3x buffer)
 			arm_fir_decimate_fast_q31_HB(&Sdeci_16k_1,deci_stage0_out,deci_stage1_out,buffLen_deci3x);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_16k_2,deci_stage1_out,deci_stage2_out,buffLen_deci6x);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_16k_3,deci_stage2_out,deci_stage3_out,buffLen_deci12x);
 			data_converters_q31_to_i16_24(deci_stage3_out,SD_write_buff+offsetDMA,buffLen_deci24x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 			break;
 		case fs_24k: // timing test 6.5 ms
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 			arm_fir_decimate_fast_q31_bob(&Sdeci_24k_0,dmaDestBuff_32bit,deci_stage0_out,DMA_buffLen);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_24k_1,deci_stage0_out,deci_stage1_out,buffLen_deci2x);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_24k_2,deci_stage1_out,deci_stage2_out,buffLen_deci4x);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_24k_3,deci_stage2_out,deci_stage3_out,buffLen_deci8x);
 			data_converters_q31_to_i16_24(deci_stage3_out,SD_write_buff+offsetDMA,buffLen_deci16x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			break;
 		case fs_32k: // timing test 4.8 ms
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 			arm_fir_decimate_fast_q31_bob(&Sdeci_32k_0,dmaDestBuff_32bit,deci_stage0_out,DMA_buffLen); // use 2x buffer to save mem (dont need a 3x buffer)
 			arm_fir_decimate_fast_q31_HB(&Sdeci_32k_1,deci_stage0_out,deci_stage1_out,buffLen_deci3x);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_32k_2,deci_stage1_out,deci_stage2_out,buffLen_deci6x);
 			data_converters_q31_to_i16_24(deci_stage2_out,SD_write_buff+offsetDMA,buffLen_deci12x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			break;
 		case fs_48k:
 			// timing test, 03 or Ofast, 8 ms w/o halfband, 6ms with halfband, conversion takes only 0.1ms
 			// timing test, 02, 8 ms w/o halfband, 6.5ms with halfband, conversion takes only 0.1ms
 
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			//data_converters_i24_to_q31(dmaDestBuff, dmaDestBuff_32bit, DMA_buffLen_bytes);
 			// test the halfband, length 7
@@ -1045,25 +1050,25 @@ void DMA0_IRQHandler()
 			arm_fir_decimate_fast_q31_HB(&Sdeci_48k_2,deci_stage1_out,deci_stage2_out,buffLen_deci4x);
 
 			data_converters_q31_to_i16_24(deci_stage2_out,SD_write_buff+offsetDMA,buffLen_deci8x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			break;
 		case fs_96k: // timing test 6.7ms
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			//data_converters_i24_to_q31(dmaDestBuff, dmaDestBuff_32bit, DMA_buffLen_bytes);
 			arm_fir_decimate_fast_q31_bob(&Sdeci_96k_0,dmaDestBuff_32bit,deci_stage0_out,DMA_buffLen);
 			arm_fir_decimate_fast_q31_HB(&Sdeci_96k_1,deci_stage0_out,deci_stage1_out,buffLen_deci2x);
 			data_converters_q31_to_i16_24(deci_stage1_out,SD_write_buff+offsetDMA,buffLen_deci4x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			break;
 		case fs_192k: // timing test 5.6 ms
-			MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 			//data_converters_i24_to_q31(dmaDestBuff, dmaDestBuff_32bit, DMA_buffLen_bytes);
 			arm_fir_decimate_fast_q31_bob(&Sdeci_192k_0,dmaDestBuff_32bit,deci_stage0_out,DMA_buffLen);
 			data_converters_q31_to_i16_24(deci_stage0_out,SD_write_buff+offsetDMA,buffLen_deci2x,magpie_bitdepth);
-			MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+			MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 			break;
 		case fs_384k: // no filtering, just copy the bytes
@@ -1087,7 +1092,7 @@ void DMA0_IRQHandler()
 
 
 
-	//	MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+	//	MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 	// timing test results; the 3 filters above take about 9ms, and the dma byte-to-signed-data conversion
 	// takes about 2ms. since we have 21.3 ms per DMA frame, we have about 10ms left.
@@ -1103,7 +1108,7 @@ void DMA0_IRQHandler()
 
     count_dma_irq++;
 
-	//MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+	//MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 
     // get ready for next dma transfer
@@ -1230,22 +1235,22 @@ void MB_LED(u_int8_t state)
 {
 	if(0 == state){
 
-	// gpio 5 is pin 6 on the feather header, connected to motherboard green LED
-		gpio_out5.port =MXC_GPIO_PORT_OUT0;
-		gpio_out5.mask= MXC_GPIO_PIN_OUT5;
-		gpio_out5.pad = MXC_GPIO_PAD_NONE;
-		gpio_out5.func = MXC_GPIO_FUNC_OUT;
-		gpio_out5.vssel = MXC_GPIO_VSSEL_VDDIO;
-		MXC_GPIO_Config(&gpio_out5);
-		MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // LED OFF
+	// FTC board green LED P1.14
+		gpio_outGreenLED.port =MXC_GPIO_PORT_OUT1;
+		gpio_outGreenLED.mask= MXC_GPIO_PIN_OUT14;
+		gpio_outGreenLED.pad = MXC_GPIO_PAD_NONE;
+		gpio_outGreenLED.func = MXC_GPIO_FUNC_OUT;
+		gpio_outGreenLED.vssel = MXC_GPIO_VSSEL_VDDIO;
+		MXC_GPIO_Config(&gpio_outGreenLED);
+		MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // LED OFF
 	} else {
-		gpio_out5.port =MXC_GPIO_PORT_OUT0;
-		gpio_out5.mask= MXC_GPIO_PIN_OUT5;
-		gpio_out5.pad = MXC_GPIO_PAD_NONE;
-		gpio_out5.func = MXC_GPIO_FUNC_OUT;
-		gpio_out5.vssel = MXC_GPIO_VSSEL_VDDIO;
-		MXC_GPIO_Config(&gpio_out5);
-		MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // LED ON
+		gpio_outGreenLED.port =MXC_GPIO_PORT_OUT1;
+		gpio_outGreenLED.mask= MXC_GPIO_PIN_OUT14;
+		gpio_outGreenLED.pad = MXC_GPIO_PAD_NONE;
+		gpio_outGreenLED.func = MXC_GPIO_FUNC_OUT;
+		gpio_outGreenLED.vssel = MXC_GPIO_VSSEL_VDDIO;
+		MXC_GPIO_Config(&gpio_outGreenLED);
+		MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // LED ON
 	}
 	
 }
@@ -1585,7 +1590,7 @@ int main(void)
 	printf("Start recording.\n");
 
 	LED_On(LED_GREEN);     
-	MB_LED(1);
+	//MB_LED(1);
 
 	// mount the card
 	mount();
@@ -1641,21 +1646,23 @@ int main(void)
 	// gpio 3 is pin 5 on the feather header and blue LED on motherboard
 	// we will disconnect the blue LED and use this gpio as in input from spi1 slave select
 	// so we can syncronize starting the spi port with rising slave-sel-B
-	gpio_in3.port =MXC_GPIO_PORT_OUT0;
-	gpio_in3.mask= MXC_GPIO_PIN_OUT3;
-	gpio_in3.pad = MXC_GPIO_PAD_NONE;
-	gpio_in3.func = MXC_GPIO_FUNC_IN;
-	gpio_in3.vssel = MXC_GPIO_VSSEL_VDDIO;
-	MXC_GPIO_Config(&gpio_in3);
+
+	//Change this to P0.4 on the FTC Board
+	gpio_in4.port =MXC_GPIO_PORT_OUT0;
+	gpio_in4.mask= MXC_GPIO_PIN_OUT4;
+	gpio_in4.pad = MXC_GPIO_PAD_NONE;
+	gpio_in4.func = MXC_GPIO_FUNC_IN;
+	gpio_in4.vssel = MXC_GPIO_VSSEL_VDDIO;
+	MXC_GPIO_Config(&gpio_in4);
 
 	// gpio 5, pin6 on feather, used for code timing tests
-	// gpio_out5.port = MXC_GPIO_PORT_OUT0;
-	// gpio_out5.mask = MXC_GPIO_PIN_OUT5;
-	// gpio_out5.pad = MXC_GPIO_PAD_NONE;
-	// gpio_out5.func = MXC_GPIO_FUNC_OUT;
-	// gpio_out5.vssel = MXC_GPIO_VSSEL_VDDIO;
-	// gpio_out5.drvstr = MXC_GPIO_DRVSTR_2;
-	// ret = MXC_GPIO_Config(&gpio_out5);
+	// gpio_outGreenLED.port = MXC_GPIO_PORT_OUT0;
+	// gpio_outGreenLED.mask = MXC_GPIO_PIN_OUT5;
+	// gpio_outGreenLED.pad = MXC_GPIO_PAD_NONE;
+	// gpio_outGreenLED.func = MXC_GPIO_FUNC_OUT;
+	// gpio_outGreenLED.vssel = MXC_GPIO_VSSEL_VDDIO;
+	// gpio_outGreenLED.drvstr = MXC_GPIO_DRVSTR_2;
+	// ret = MXC_GPIO_Config(&gpio_outGreenLED);
 
 
 
@@ -1682,6 +1689,17 @@ int main(void)
 
 	set_adc_host_clock_mode();
 	MXC_Delay(100000);
+
+	//Enable tri-state driver by setting CS_EN to LO  (P1.6)
+	gpio_out1_6.port =MXC_GPIO_PORT_OUT1;
+	gpio_out1_6.mask= MXC_GPIO_PIN_OUT6;
+	gpio_out1_6.pad = MXC_GPIO_PAD_NONE;
+	gpio_out1_6.func = MXC_GPIO_FUNC_OUT;
+	gpio_out1_6.vssel = MXC_GPIO_VSSEL_VDDIO;
+	MXC_GPIO_Config(&gpio_out1_6);
+	MXC_GPIO_OutClr(gpio_out1_6.port,gpio_out1_6.mask); // set LOW for CS_EN to enable ADC
+
+
 	MXC_GPIO_OutSet(gpio_out20.port,gpio_out20.mask); // turn on adc clock
 
 	spi1_init_slave();
@@ -1703,8 +1721,8 @@ int main(void)
 
 	stall = 1;
 	while(stall) { // stall until a rising edge on slave-sel-B. This is to insure we have no partial writes (1 or 2 bytes) that mess up the dma
-		temp1  = MXC_GPIO_InGet(gpio_in3.port,gpio_in3.mask); // L
-		temp2 =  MXC_GPIO_InGet(gpio_in3.port,gpio_in3.mask); // H
+		temp1  = MXC_GPIO_InGet(gpio_in4.port,gpio_in4.mask); // L
+		temp2 =  MXC_GPIO_InGet(gpio_in4.port,gpio_in4.mask); // H
                  		stall = (!temp2 || temp1);
 
 		printf("Stalling temp1: %d, temp2: %d.\n",temp1,temp2);
@@ -1725,9 +1743,9 @@ int main(void)
 		{ // there is normally a difference of 1, unless the SD card has stalled and the block writes have fallen behind
 			delta = dataBlocksDmaCount - dataBlocksConsumedCount;
 		}
-		//MXC_GPIO_OutSet(gpio_out5.port,gpio_out5.mask); // timing test
+		//MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 		f_write(&file, SD_write_buff + offsetSDbuff, numBytesSDwrite, &bw); // # bytes = 3X word length of buffer, 24 bits
-		//MXC_GPIO_OutClr(gpio_out5.port,gpio_out5.mask); // timing test
+		//MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 		dataBlocksConsumedCount+=1;
 		blockPtrModuloSDbuff = (blockPtrModuloSDbuff+1) & block_ptr_modulo_mask; // wraps before end of sd_write_buff
@@ -1789,8 +1807,10 @@ int main(void)
 
 
 	//writing is done
+	MXC_GPIO_OutSet(gpio_out1_6.port,gpio_out1_6.mask); // set High for CS_EN to disable ADC 
+
 	LED_Off(LED_RED);
-	MB_LED(0);
+	//MB_LED(0);
 
 
 	printf("Recording Completed.\n");

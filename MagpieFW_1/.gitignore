@@ -2,6 +2,6 @@
 build
 .settings
 flash.log
-*.o
 *.d
+*.o
 
