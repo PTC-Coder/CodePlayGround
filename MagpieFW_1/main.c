@@ -1756,7 +1756,7 @@ int main(void)
 		temp2 =  MXC_GPIO_InGet(gpio_in4.port,gpio_in4.mask); // H
                  		stall = (!temp2 || temp1);
 
-		printf("Stalling temp1: %d, temp2: %d.\n",temp1,temp2);
+		//printf("Stalling temp1: %d, temp2: %d.\n",temp1,temp2);
 	}
 	printf("Partial Writes cleared ...\n\n");
 
@@ -1785,9 +1785,9 @@ int main(void)
 		blockPtrModuloSDbuff = (blockPtrModuloSDbuff+1) & block_ptr_modulo_mask; // wraps before end of sd_write_buff
 		offsetSDbuff = blockPtrModuloSDbuff*numBytesSDwrite;
 
-		printf("\nRecording Time DMA Blocks: %d \n\n", RECORDING_TIME_DMABLOCKS);
-		printf("Data block consumed: %d\n", dataBlocksConsumedCount);
-		printf("count dma irq: %d\n", count_dma_irq);
+		//printf("\nRecording Time DMA Blocks: %d \n\n", RECORDING_TIME_DMABLOCKS);
+		//printf("Data block consumed: %d\n", dataBlocksConsumedCount);
+		//printf("count dma irq: %d\n", count_dma_irq);
 	}
 
 

@@ -39,11 +39,14 @@
 #include "spixf.h"
 #include "board.h"
 #include "led.h"
+#include "lfs.h"
+#include "lfs_util.h" 
 
 /***** Definitions *****/
 #define EXT_FLASH_BAUD 8000000 /* SPI clock rate to communicate with the external flash */
 #define EXT_FLASH_ADDR 0
 #define EXT_FLASH_SPIXFC_WIDTH Ext_Flash_DataLine_Single
+#define EXT_FLASH_SIZE 268435456//1048576
 
 #define BUFF_SIZE  2112
 
@@ -60,6 +63,46 @@ extern int Image$$RW_IRAM2$$Length;
 extern char Image$$RW_IRAM2$$Base[];
 uint8_t *__xip_addr;
 #endif
+
+#define NAND_PAGE_SIZE 2048
+#define NAND_BLOCK_SIZE (64 * NAND_PAGE_SIZE)  // 128 KB
+#define NAND_TOTAL_SIZE 268435456  // 256 MB
+
+int block_device_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size) {
+    uint32_t addr = block * NAND_BLOCK_SIZE + off;
+    return Ext_Flash_Read(addr, buffer, size, EXT_FLASH_SPIXFC_WIDTH);
+}
+
+int block_device_prog(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size) {
+    uint32_t addr = block * NAND_BLOCK_SIZE + off;
+    return Ext_Flash_Program_Page(addr, buffer, size, EXT_FLASH_SPIXFC_WIDTH);
+}
+
+int block_device_erase(const struct lfs_config *c, lfs_block_t block) {
+    uint32_t addr = block * NAND_BLOCK_SIZE;
+    return Ext_Flash_Erase(addr, Ext_Flash_Erase_128K);
+}
+
+int block_device_sync(const struct lfs_config *c) {
+    return 0;
+}
+
+// Configure LittleFS
+const struct lfs_config cfg = {
+    .read  = block_device_read,
+    .prog  = block_device_prog,
+    .erase = block_device_erase,
+    .sync  = block_device_sync,
+    .block_size = NAND_BLOCK_SIZE,
+    .block_count = NAND_TOTAL_SIZE / NAND_BLOCK_SIZE,
+    .cache_size = NAND_PAGE_SIZE,
+    .lookahead_size = 32,
+    .block_cycles = 500,
+    .read_size = NAND_PAGE_SIZE,
+    .prog_size = NAND_PAGE_SIZE,
+};
+
+lfs_t lfs;
 
 /******************************************************************************/
 static int ext_flash_module_init(void)
@@ -167,8 +210,8 @@ int main(void)
 
     printf("\n\n********************* SPIX Example *********************\n");
     printf("This example communicates with an %s flash on the FTHR\n", EXT_FLASH_NAME);
-    printf("loads code onto it and then executes that code using the \n");
-    printf("SPIX execute-in-place peripheral\n\n");
+    //printf("loads code onto it and then executes that code using the \n");
+    //printf("SPIX execute-in-place peripheral\n\n");
 
     printf("SPI Clock: %d Hz\n\n", EXT_FLASH_BAUD);
 
@@ -214,7 +257,7 @@ int main(void)
     }
 
     int err;
-
+/* 
     //Unprotect status register and write protection
     printf("Erasing first 128k sector ...\n");
     if(E_NO_ERROR != Ext_Flash_Unprotect_StatusRegister()){
@@ -326,7 +369,7 @@ int main(void)
             printf("[SUCCESS]--> Programmed flash memory verified\n\n");
         }
         remain -= chunk;
-    }
+    } */
 
 
 // ----   This section doesn't work unless the Flash is a NOR type.  Required to do execution in place (XIP)
@@ -342,6 +385,71 @@ int main(void)
         func();
         printf("Returned from external flash\n\n");
     } */
+
+    // Initialize LittleFS
+    lfs_file_t file;
+
+    // Mount the filesystem
+    err = lfs_mount(&lfs, &cfg);
+    if (err) {
+        printf("Failed to mount filesystem. Formatting...\n");
+        err = lfs_format(&lfs, &cfg);
+        if (err) {
+            printf("Failed to format filesystem: error %d\n", err);
+            return err;
+        }
+        printf("Filesystem formatted. Mounting...\n");
+        err = lfs_mount(&lfs, &cfg);
+        if (err) {
+            printf("Failed to mount formatted filesystem: error %d\n", err);
+            return err;
+        }
+    }
+
+    // Write to a file
+    err = lfs_file_open(&lfs, &file, "myfile.txt", LFS_O_RDWR | LFS_O_CREAT);
+    if (err) {
+        printf("Failed to open file for writing: error %d\n", err);
+        lfs_unmount(&lfs);
+        return err;
+    }
+
+    char *data = "Hello, LittleFS on MAX32666!";
+    lfs_ssize_t written = lfs_file_write(&lfs, &file, data, strlen(data));
+    if (written < 0) {
+        printf("Failed to write to file: error %d\n", written);
+        lfs_file_close(&lfs, &file);
+        lfs_unmount(&lfs);
+        return written;
+    }
+
+    lfs_file_close(&lfs, &file);
+
+    // Read from the file
+    char buf[64] = {0};
+    err = lfs_file_open(&lfs, &file, "myfile.txt", LFS_O_RDONLY);
+    if (err) {
+        printf("Failed to open file for reading: error %d\n", err);
+        lfs_unmount(&lfs);
+        return err;
+    }
+
+    lfs_ssize_t read = lfs_file_read(&lfs, &file, buf, sizeof(buf) - 1);
+    if (read < 0) {
+        printf("Failed to read from file: error %d\n", read);
+        lfs_file_close(&lfs, &file);
+        lfs_unmount(&lfs);
+        return read;
+    }
+
+    lfs_file_close(&lfs, &file);
+
+    printf("Read from file: %s\n", buf);
+
+    // Unmount the filesystem
+    lfs_unmount(&lfs);
+    
+   
 
     printf("\n ************** Example Succeeded ****************\n");
     return E_NO_ERROR;
