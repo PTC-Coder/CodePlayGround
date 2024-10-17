@@ -204,6 +204,7 @@
 #define MXC_GPIO_PIN_OUT30  MXC_GPIO_PIN_30 //Blue LED on FTHR board (not motherboard!)
 
 #define MXC_GPIO_PIN_OUT6  MXC_GPIO_PIN_6 //CS_EN pin
+#define MCX_GPIO_PIN_OUT22 MXC_GPIO_PIN_22   //MR pin for controlling ADC Clocking circuit
 
 // Parameters for PWM output
 #define PORT_PWM MXC_GPIO0 //port
@@ -290,6 +291,7 @@ mxc_gpio_cfg_t gpio_in30; // the blue LED on feather (not on motherboard!)
 mxc_gpio_cfg_t gpio_out12; // pin 4 on feather, used for timing etsts
 
 mxc_gpio_cfg_t gpio_out1_6; // to control CS_EN pin
+mxc_gpio_cfg_t gpio_out22; // to control MR Pin
 
 // structs for spi port
 mxc_spi_req_t SPI2_req_master_ctrl_write; // use this struct when using spi2 to write to the adc control port
@@ -1265,6 +1267,17 @@ void MB_LED(u_int8_t state)
 
 int main(void)
 {
+		for (size_t i = 0; i < 5; i++)
+	{
+		LED_On(LED_RED);
+		LED_On(LED_BLUE);
+		LED_On(LED_GREEN);
+		MXC_Delay(100000);
+		LED_Off(LED_RED);
+		LED_Off(LED_BLUE);
+		LED_Off(LED_GREEN);
+		MXC_Delay(100000);
+	}
 
 	char metaBuffer[32] = {0};
 	MXC_Delay(MXC_DELAY_SEC(1));
@@ -1307,17 +1320,6 @@ int main(void)
 		return 1;
 	}
 
-	for (size_t i = 0; i < 5; i++)
-	{
-		LED_On(LED_RED);
-		LED_On(LED_BLUE);
-		LED_On(LED_GREEN);
-		MXC_Delay(500000);
-		LED_Off(LED_RED);
-		LED_Off(LED_BLUE);
-		LED_Off(LED_GREEN);
-		MXC_Delay(500000);
-	}
 
 	#ifdef FIRST_SET_RTC
 	// //Set Date Time to something
@@ -1400,7 +1402,7 @@ int main(void)
 
 	// magpie_new - set sample-rate and bit depth
 	//******************* set sample rate ************************
-	magpie_FS =fs_48k; // use this to set sample rate; the variable FS is also set, for writing the wav header file
+	magpie_FS =fs_384k; // use this to set sample rate; the variable FS is also set, for writing the wav header file
 	//*************************************************************
 
 	//******************* set bit depth, 1=24 bits, 0=16 bits ************************
@@ -1491,6 +1493,8 @@ int main(void)
 	printf("Selecting SD Card Slot 0 .....\n");
 	//Select Card Slot 0
 	sd_card_bank_ctl_enable_slot(0);
+
+
     // sd_card_bank_ctl_read_and_cache_detect_pins();
 
 	// if (!sd_card_bank_ctl_active_card_is_inserted())
@@ -1605,14 +1609,6 @@ int main(void)
 		MXC_Delay(500000);
 	}
 
-	for (size_t i = 0; i < 5; i++)
-	{
-		LED_On(LED_BLUE);
-		MXC_Delay(500000);
-		LED_Off(LED_BLUE);
-		MXC_Delay(500000);
-	}
-
 	printf("Start recording.\n");
 
 	LED_On(LED_GREEN);     
@@ -1716,6 +1712,15 @@ int main(void)
 	set_adc_host_clock_mode();
 	MXC_Delay(100000);
 
+	//Enable ADC Clocking circuit setting MR to LO  (P0.22)
+	gpio_out22.port =MXC_GPIO_PORT_OUT0;
+	gpio_out22.mask= MCX_GPIO_PIN_OUT22;
+	gpio_out22.pad = MXC_GPIO_PAD_NONE;
+	gpio_out22.func = MXC_GPIO_FUNC_OUT;
+	gpio_out22.vssel = MXC_GPIO_VSSEL_VDDIO;
+	MXC_GPIO_Config(&gpio_out22);
+	MXC_GPIO_OutClr(gpio_out22.port,gpio_out22.mask); // set LOW for CS_EN to enable ADC
+
 	//Enable tri-state driver by setting CS_EN to LO  (P1.6)
 	gpio_out1_6.port =MXC_GPIO_PORT_OUT1;
 	gpio_out1_6.mask= MXC_GPIO_PIN_OUT6;
@@ -1763,19 +1768,26 @@ int main(void)
 
 	// magpie_new; write 1 or more blocks, using the slow-sd card recovery scheme
 	u_int32_t bw;
+
+	
+
 	while(count_dma_irq < RECORDING_TIME_DMABLOCKS) 
 	{ // interupts happen here, count_dma_irq increments at fs/dmaBlockSize
 		while((dataBlocksDmaCount - dataBlocksConsumedCount) > 0) 
 		{ // there is normally a difference of 1, unless the SD card has stalled and the block writes have fallen behind
 			delta = dataBlocksDmaCount - dataBlocksConsumedCount;
 		}
-		//MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
+		// //MXC_GPIO_OutSet(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 		f_write(&file, SD_write_buff + offsetSDbuff, numBytesSDwrite, &bw); // # bytes = 3X word length of buffer, 24 bits
-		//MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
+		// //MXC_GPIO_OutClr(gpio_outGreenLED.port,gpio_outGreenLED.mask); // timing test
 
 		dataBlocksConsumedCount+=1;
 		blockPtrModuloSDbuff = (blockPtrModuloSDbuff+1) & block_ptr_modulo_mask; // wraps before end of sd_write_buff
 		offsetSDbuff = blockPtrModuloSDbuff*numBytesSDwrite;
+
+		printf("\nRecording Time DMA Blocks: %d \n\n", RECORDING_TIME_DMABLOCKS);
+		printf("Data block consumed: %d\n", dataBlocksConsumedCount);
+		printf("count dma irq: %d\n", count_dma_irq);
 	}
 
 
@@ -1783,6 +1795,7 @@ int main(void)
 	MXC_DMA_Stop(mychannel);
 
 
+	printf("Closing File on SD Card ... \n");
 	if ((err = f_close(&file)) != FR_OK)
 	{
 		debug1=13;
@@ -1809,6 +1822,8 @@ int main(void)
 	// close again
 	f_close(&file);
 
+
+	//Generate time stamp
 	set_timestamp(savedFileName, ds3231_datetime.tm_year + 1900, 
 						ds3231_datetime.tm_mon + 1, 
 						ds3231_datetime.tm_mday, 
@@ -1817,8 +1832,9 @@ int main(void)
 						ds3231_datetime.tm_sec);
     
 
-	// unmount SD Card
+	// // unmount SD Card
 
+	printf("Unmounting SD Card ...\n");
 	if ((err = f_mount(NULL, "", 0)) != FR_OK)
 	{
 		debug1 = 15;
@@ -1834,13 +1850,14 @@ int main(void)
 
 	//writing is done
 	MXC_GPIO_OutSet(gpio_out1_6.port,gpio_out1_6.mask); // set High for CS_EN to disable ADC 
+	MXC_GPIO_OutSet(gpio_out22.port, gpio_out22.mask);  // set High for MR to disable clocking circuit
 
 	LED_Off(LED_RED);
 	//MB_LED(0);
 
 
 	printf("Recording Completed.\n");
-	printf("Reset the FTHR2 board to start another recording.\n");
+	printf("Reset the Magpie board to start another recording.\n");
 
 	LED_On(LED_BLUE);
 
