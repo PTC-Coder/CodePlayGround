@@ -29,7 +29,7 @@ __attribute__((section(".xip_section"))) void xip_function(void)
     int j;
 
     for (j = 0; j < 10; j++) {
-        MXC_GPIO0->out_set = MXC_GPIO_PIN_29;    //JTAG TDI is GPIO 1.14
+        MXC_GPIO0->out_set = MXC_GPIO_PIN_29;    //JTAG TDI is GPIO 1.14  //Pin29
 
         for (i = 0; i < 0x100000; i++) {}
 

@@ -156,7 +156,7 @@ uint32_t Ext_Flash_ID(void);
 
 /**
  * @brief       Enable/Disable the Quad Enable(QE) bit in the status register.
- * @param       enable    @arg @b 1 enables Quad Mode. @arg @b 0 disables Quad Mode.
+ * @param       void
  * @retval      0         Success
  * @retval      Non-zero  Error condition
  */
@@ -181,6 +181,16 @@ Ext_Flash_Error_t Ext_Flash_DataRead(uint32_t address);
  * @retval      Non-zero  Error condition
  */
 Ext_Flash_Error_t Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line);
+
+
+/**
+ * @brief       Sycn flash by reading the status registers
+ * @param       void
+ * @retval      0         Success
+ * @retval      Non-zero  Error condition
+ */
+Ext_Flash_Error_t Ext_Flash_SyncFlash(void);
+
 
 /**
  * @brief       Program the memory to @p tx_buf and length @p tx_len, applies to both SPI and QPI modes.

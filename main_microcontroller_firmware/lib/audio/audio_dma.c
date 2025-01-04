@@ -3,6 +3,7 @@
 #include "audio_dma.h"
 #include "board.h"
 #include "bsp_pins.h"
+#include "mxc_sys.h"
 
 #include "arm_math.h"
 
@@ -76,6 +77,14 @@ void DMA0_IRQHandler();
 
 Audio_DMA_Error_t audio_dma_init()
 {
+
+    // Added this section to re-initialize DMA
+    if (!MXC_SYS_IsClockEnabled(MXC_SYS_PERIPH_CLOCK_DMA)) {
+        MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_DMA);
+        MXC_SYS_Reset_Periph(MXC_SYS_RESET_DMA0);
+    }
+    
+
     MXC_GPIO_Config(&bsp_pins_adc_cs_check_pin_cfg);
 
     NVIC_EnableIRQ(DMA0_IRQn);

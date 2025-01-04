@@ -65,26 +65,34 @@ uint8_t *__xip_addr;
 #endif
 
 #define NAND_PAGE_SIZE 2048
-#define NAND_BLOCK_SIZE (64 * NAND_PAGE_SIZE)  // 128 KB
+#define NAND_BLOCK_SIZE (64 * NAND_PAGE_SIZE)  // Block size = 64 pages × 2048 bytes = 128KB
 #define NAND_TOTAL_SIZE 268435456  // 256 MB
+#define NAND_BLOCK_COUNT 2048
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size) {
-    uint32_t addr = block * NAND_BLOCK_SIZE + off;
+    uint32_t addr = block * c->block_size + off;
+
+    //First fill data buffer
+    Ext_Flash_DataRead(addr);
+    //then read from data buffer
     return Ext_Flash_Read(addr, buffer, size, EXT_FLASH_SPIXFC_WIDTH);
 }
 
 int block_device_prog(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size) {
-    uint32_t addr = block * NAND_BLOCK_SIZE + off;
+    uint32_t addr = block * c->block_size + off;
+    
     return Ext_Flash_Program_Page(addr, buffer, size, EXT_FLASH_SPIXFC_WIDTH);
 }
 
 int block_device_erase(const struct lfs_config *c, lfs_block_t block) {
-    uint32_t addr = block * NAND_BLOCK_SIZE;
-    return Ext_Flash_Erase(addr, Ext_Flash_Erase_128K);
+    uint32_t addr = block * c->block_size;
+
+    return Ext_Flash_Bulk_Erase();
+    //return Ext_Flash_Erase(addr, Ext_Flash_Erase_128K);
 }
 
 int block_device_sync(const struct lfs_config *c) {
-    return 0;
+    return Ext_Flash_SyncFlash();
 }
 
 // Configure LittleFS
@@ -93,13 +101,14 @@ const struct lfs_config cfg = {
     .prog  = block_device_prog,
     .erase = block_device_erase,
     .sync  = block_device_sync,
+
     .block_size = NAND_BLOCK_SIZE,
-    .block_count = NAND_TOTAL_SIZE / NAND_BLOCK_SIZE,
+    .block_count = NAND_BLOCK_COUNT,
     .cache_size = NAND_PAGE_SIZE,
-    .lookahead_size = 32,
-    .block_cycles = 500,
-    .read_size = NAND_PAGE_SIZE,
-    .prog_size = NAND_PAGE_SIZE,
+    .lookahead_size = NAND_PAGE_SIZE,
+    .block_cycles = 100000,
+    .read_size = NAND_BLOCK_COUNT,
+    .prog_size = NAND_BLOCK_COUNT,
 };
 
 lfs_t lfs;
@@ -118,6 +127,7 @@ static int ext_flash_module_init(void)
 }
 
 /******************************************************************************/
+//SPIFX read write setup communication functions (not the actual flash read/write)
 static int ext_flash_module_read(uint8_t *read, unsigned len, unsigned deassert,
                                 Ext_Flash_DataLine_t width)
 {
@@ -257,9 +267,29 @@ int main(void)
     }
 
     int err;
+
+    //Unprotect status register and write protection
+    printf("Unlocking Flash Write Protection ...\n");
+    if(E_NO_ERROR != Ext_Flash_Unprotect_StatusRegister()){
+        printf("[ERROR]--> Failed to unlock write protection.\n\n");
+        return E_FAIL;
+    } else {
+        printf("[SUCCESS]--> Write protection unlocked.\n\n");
+    }
+
+    // Erase Flash
+    // printf("Bulk erasing flash\n");
+    // if(E_NO_ERROR != Ext_Flash_Bulk_Erase()){
+    //     printf("[ERROR]--> Flash failed to bulk erase\n\n");
+    //     return E_FAIL;
+    // } else {
+    //     printf("[SUCCESS]--> Flash succesfully bulk erased.\n\n");
+    // }
+
+
 /* 
     //Unprotect status register and write protection
-    printf("Erasing first 128k sector ...\n");
+    printf("Unlocking Write Protection ...\n");
     if(E_NO_ERROR != Ext_Flash_Unprotect_StatusRegister()){
         printf("[ERROR]--> Failed to unlock write protection.\n\n");
         return E_FAIL;
@@ -369,8 +399,8 @@ int main(void)
             printf("[SUCCESS]--> Programmed flash memory verified\n\n");
         }
         remain -= chunk;
-    } */
-
+    }
+ */
 
 // ----   This section doesn't work unless the Flash is a NOR type.  Required to do execution in place (XIP)
 /*     if (fail != 0) {
@@ -386,13 +416,34 @@ int main(void)
         printf("Returned from external flash\n\n");
     } */
 
+/*
+// Littlefs error codes
+enum lfs_error {
+    LFS_ERR_OK          = 0,    // No error
+    LFS_ERR_IO          = -1,   // Error during device operation
+    LFS_ERR_CORRUPT     = -84,  // Corrupted
+    LFS_ERR_NOENT      = -2,    // No directory entry
+    LFS_ERR_EXIST      = -17,   // Entry already exists
+    LFS_ERR_NOTDIR     = -20,   // Entry is not a dir
+    LFS_ERR_ISDIR      = -21,   // Entry is a dir
+    LFS_ERR_NOTEMPTY   = -39,   // Dir is not empty
+    LFS_ERR_BADF       = -9,    // Bad file number
+    LFS_ERR_FBIG       = -27,   // File too large
+    LFS_ERR_INVAL      = -22,   // Invalid parameter
+    LFS_ERR_NOSPC      = -28,   // No space left on device
+    LFS_ERR_NOMEM      = -12,   // No more memory available
+};
+*/
+
+
     // Initialize LittleFS
     lfs_file_t file;
 
     // Mount the filesystem
     err = lfs_mount(&lfs, &cfg);
     if (err) {
-        printf("Failed to mount filesystem. Formatting...\n");
+        printf("Failed to mount filesystem.\n");
+        printf("Formatting...\n");
         err = lfs_format(&lfs, &cfg);
         if (err) {
             printf("Failed to format filesystem: error %d\n", err);
@@ -405,14 +456,17 @@ int main(void)
             return err;
         }
     }
+    printf("File system mounted successfully\n");
 
+    
     // Write to a file
-    err = lfs_file_open(&lfs, &file, "myfile.txt", LFS_O_RDWR | LFS_O_CREAT);
+    err = lfs_file_open(&lfs, &file, "myfile", LFS_O_RDWR | LFS_O_CREAT);
     if (err) {
         printf("Failed to open file for writing: error %d\n", err);
         lfs_unmount(&lfs);
         return err;
     }
+    printf("myfile.txt opened for write successfully\n");
 
     char *data = "Hello, LittleFS on MAX32666!";
     lfs_ssize_t written = lfs_file_write(&lfs, &file, data, strlen(data));
@@ -422,13 +476,52 @@ int main(void)
         lfs_unmount(&lfs);
         return written;
     }
+    printf("myfile written successfully. %d written\n", written);
+
+    //Sync Flash after write
+    err = lfs_file_sync(&lfs, &file);
+    if (err) {
+        printf("Failed to sync file: error %d\n", err);
+        lfs_file_close(&lfs, &file);
+        lfs_unmount(&lfs);
+        return err;
+    }
+    printf("File sync successfully.\n");
 
     lfs_file_close(&lfs, &file);
+    
+    //List directory 
+    lfs_dir_t dir;
+    struct lfs_info info;
+
+    err = lfs_dir_open(&lfs, &dir, "/");
+    if (err) {
+        printf("Failed to open root directory: error %d\n", err);
+        return err;
+    }
+
+    while (true) {
+        int res = lfs_dir_read(&lfs, &dir, &info);
+        if (res < 0) {
+            printf("Error reading directory: %d\n", res);
+            break;
+        }
+        if (res == 0) {
+            break;
+        }
+        printf("Found file: %s\n", info.name);
+    }
+
+    lfs_dir_close(&lfs, &dir);
+
 
     // Read from the file
-    char buf[64] = {0};
-    err = lfs_file_open(&lfs, &file, "myfile.txt", LFS_O_RDONLY);
-    if (err) {
+    char buf[NAND_BLOCK_SIZE] = {0};
+    err = lfs_file_open(&lfs, &file, "myfile", LFS_O_RDONLY);
+    if (err == LFS_ERR_NOENT){
+         printf("File does not exist\n");
+    }
+    else if (err) {
         printf("Failed to open file for reading: error %d\n", err);
         lfs_unmount(&lfs);
         return err;

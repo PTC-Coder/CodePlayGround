@@ -448,3 +448,4 @@
 #define DEBUG 1
 #define MXC_ASSERT_ENABLE 1
 #define LIB_BOARD 1
+#define MXC_SPI_V1 1

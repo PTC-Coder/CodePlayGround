@@ -168,7 +168,7 @@ mxc_spi_regs_t *bsp_pins_adc_ch1_data_spi_handle = MXC_SPI0;
 
 const mxc_sys_periph_clock_t bsp_pins_adc_ch1_data_spi_clock_enum = MXC_SYS_PERIPH_CLOCK_SPI0;
 
-const mxc_gpio_cfg_t bsp_pins_adc_cs_en_cfg = {
+const mxc_gpio_cfg_t bsp_pins_adc_cs_disable_cfg = {
     .port = MXC_GPIO1,
     .mask = MXC_GPIO_PIN_6,
     .pad = MXC_GPIO_PAD_NONE,

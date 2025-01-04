@@ -21,6 +21,7 @@
 #include "wav_header.h"
 
 #include <string.h>
+//#include "SEGGER_RTT.h"
 
 /* Private function declarations -------------------------------------------------------------------------------------*/
 
@@ -47,7 +48,10 @@ static void error_handler(Status_LED_Color_t c);
 
 int main(void)
 {
+    
+    
     printf("*********** CLI ADC write Example ***********\n\n");
+    
 
     bsp_power_on_LDOs();
 
@@ -71,6 +75,12 @@ int main(void)
         printf("[SUCCESS]--> DMA init\n");
     }
 
+    
+    printf("[Success]-->Decimation\n");
+    ad4630_cont_conversions_start();
+    printf("[Success]-->ADC converison\n");    
+    audio_dma_start();
+
     if (bsp_3v3_i2c_init() != E_NO_ERROR)
     {
         printf("[ERROR]--> I2C init\n");
@@ -89,18 +99,20 @@ int main(void)
         printf("[SUCCESS]--> SD card bank ctl init\n");
     }
 
-    sd_card_bank_ctl_enable_slot(0);
+    uint8_t selectedSlot = 4;  //Slot 0 to 5.   Slot 4 and 5 are swapped
+
+    sd_card_bank_ctl_enable_slot(selectedSlot);
 
     sd_card_bank_ctl_read_and_cache_detect_pins();
 
     if (!sd_card_bank_ctl_active_card_is_inserted())
     {
-        printf("[ERROR]--> Card at slot 0 not inserted\n");
+        printf("[ERROR]--> Card at slot %d not inserted\n", selectedSlot);
         error_handler(STATUS_LED_COLOR_RED);
     }
     else
     {
-        printf("[SUCCESS]--> SD card inserted in slot 0\n");
+        printf("[SUCCESS]--> SD card inserted in slot %d\n", selectedSlot);
     }
 
     if (sd_card_init() != SD_CARD_ERROR_ALL_OK)
@@ -205,25 +217,38 @@ void write_demo_wav_file(Wave_Header_Attributes_t *wav_attr, uint32_t file_len_s
         printf("[SUCCESS]--> SD card lseek\n");
     }
 
-    decimation_filter_set_sample_rate(wav_attr->sample_rate);
+  
 
+    decimation_filter_set_sample_rate(wav_attr->sample_rate);
+    printf("[Success]-->Decimation\n");
     ad4630_cont_conversions_start();
+    printf("[Success]-->ADC converison\n");
+
+    audio_dma_clear_overrun();
+    
     audio_dma_start();
+   // prinf("[Success]-->DMA\n");
 
     for (uint32_t num_dma_blocks_written = 0; num_dma_blocks_written < num_dma_blocks_in_the_file;)
     {
+
         if (audio_dma_overrun_occured())
         {
-            printf("[ERROR]--> Audio DMA overrrun\n");
-            error_handler(STATUS_LED_COLOR_BLUE);
+            //printf("[ERROR]--> Audio DMA overrrun\n");
+            //error_handler(STATUS_LED_COLOR_BLUE);
+            printf("[Waring] Audio DMA Overrun\n");
         }
 
         while (audio_dma_num_buffers_available() > 0)
         {
+
+            
+
             if (wav_attr->sample_rate == WAVE_HEADER_SAMPLE_RATE_384kHz)
             {
                 // for 384kHz data, we just need to swap the endianness of the sample to little-endian format needed for WAV
                 data_converters_i24_swap_endianness(audio_dma_consume_buffer(), audio_buff_0, AUDIO_DMA_BUFF_LEN_IN_BYTES);
+                
 
                 if (wav_attr->bits_per_sample == WAVE_HEADER_24_BITS_PER_SAMPLE)
                 {
@@ -272,6 +297,8 @@ void write_demo_wav_file(Wave_Header_Attributes_t *wav_attr, uint32_t file_len_s
             }
 
             num_dma_blocks_written += 1;
+
+            
         }
     }
 

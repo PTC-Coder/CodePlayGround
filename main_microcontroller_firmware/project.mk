@@ -14,47 +14,43 @@
 # https://www.analog.com/en/education/education-library/videos/6313214207112.html
 SBT=0
 
-# use the BSP defined in the root of the main firmware location
+# use the custom BSP located in ./BSP/
 BSP_SEARCH_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BOARD = BSP
 
 PROJ_CFLAGS+=-mno-unaligned-access
+
 MXC_OPTIMIZE_CFLAGS = -O2
+
+PROJ_LDFLAGS += -Wl,--print-memory-usage
 
 # do manual pin config, don't use the pin constants in msdk/Libraries/PeriphDrivers/Source/SYS/pins_me14.c
 # this means we need to explicitly set up all the pins for the peripherals we use
 PROJ_CFLAGS += -DMSDK_NO_GPIO_CLK_INIT
 
-LIB_CMSIS_DSP = 1
-
-# Use the CLI lib in ./MSDK_overrides/SDHC/ instead of the files supplied by the MSKD, this is because the MSKD
-# version does not have the right definitions for MAX32666, even through it works when you add them
- LIB_CLI = 1
-
- include ../../MSDK_overrides/CLI/CLI.mk
-
- IPATH += ../../MSDK_overrides/CLI/inc
- VPATH += ../../MSDK_overrides/CLI/src
-
 # Use the SDHC lib in ./MSDK_overrides/SDHC/ instead of the files supplied by the MSKD, this is because the MSKD
 # version is hardcoded to 1-bit mode, and we want 4-bit mode
 FATFS_VERSION = ff15
-SDHC_DRIVER_DIR = ../../MSDK_overrides/SDHC/
+SDHC_DRIVER_DIR = ./MSDK_overrides/SDHC/
 
-include ../../MSDK_overrides/SDHC/sdhc.mk
-include ../../MSDK_overrides/SDHC/ff15/fat32.mk
+include ./MSDK_overrides/SDHC/sdhc.mk
+include ./MSDK_overrides/SDHC/ff15/fat32.mk
 
-IPATH += ../../MSDK_overrides/SDHC/Include/
-IPATH += ../../MSDK_overrides/SDHC/ff15/source/
-IPATH += ../../MSDK_overrides/SDHC/ff15/source/conf/
+IPATH += ./MSDK_overrides/SDHC/Include/
+IPATH += ./MSDK_overrides/SDHC/ff15/source/
+IPATH += ./MSDK_overrides/SDHC/ff15/source/conf/
 
-IPATH += ../../lib/audio/
-VPATH += ../../lib/audio/
+LIB_CMSIS_DSP = 1
 
-IPATH += ../../lib/sd_card/
-VPATH += ../../lib/sd_card/
+# 3rd party GNSS parsing lib
+IPATH += ./third_party/minmea/
+SRCS += ./third_party/minmea/minmea.c
+PROJ_CFLAGS += -Dtimegm=mktime # needed for the minmea lib
 
-IPATH += ../../lib/utils/
-VPATH += ../../lib/utils/
+IPATH += ./lib/audio/
+VPATH += ./lib/audio/
 
-PROJ_LDFLAGS += -Wl,--print-memory-usage
+IPATH += ./lib/utils/
+VPATH += ./lib/utils/
+
+VPATH += ./app/

@@ -360,6 +360,8 @@ Ext_Flash_Error_t Ext_Flash_Quad(int enable)
 }
 
 /* ************************************************************************* */
+//Read data out from the Flash data buffer by using 4-wire SPI mode
+//Need to the Ext_Flash_Read function first to fill the buffer
 Ext_Flash_Error_t Ext_Flash_DataRead(uint32_t address)
 {
     int err = EF_E_SUCCESS;
@@ -389,6 +391,8 @@ Ext_Flash_Error_t Ext_Flash_DataRead(uint32_t address)
 }
 
 /* ************************************************************************* */
+//Read data out from the Flash Memory to Flash buffer.
+//Do this before the Ext_Flash_DataRead function
 Ext_Flash_Error_t Ext_Flash_Read(uint32_t address, uint8_t *rx_buf, uint32_t rx_len, Ext_Flash_DataLine_t d_line)
 {
     int err = EF_E_SUCCESS;
@@ -634,6 +638,25 @@ Ext_Flash_Error_t Ext_Flash_Read_SR(uint8_t *buf, Ext_Flash_StatusReg_t reg_num)
     }
 
     return read_status_reg(cmd, buf);
+}
+
+/* ************************************************************************* */
+//Basically just read the status register
+Ext_Flash_Error_t Ext_Flash_SyncFlash(void)
+{
+    Ext_Flash_Error_t err = EF_E_SUCCESS;
+    uint8_t sr1, sr2;
+
+
+    if ((err = Ext_Flash_Read_SR(&sr1, Ext_Flash_StatusReg_1)) !=
+        EF_E_SUCCESS) { // Get current value of flash protect bits
+        return err;
+    }
+    if ((err = Ext_Flash_Read_SR(&sr2, Ext_Flash_StatusReg_2)) != EF_E_SUCCESS) {
+        return err;
+    }
+
+    return EF_E_SUCCESS;
 }
 
 /* ************************************************************************* */

@@ -12,19 +12,10 @@
 
 int bsp_adc_config_spi_init()
 {
+    MXC_GPIO_Config(&bsp_pins_adc_cfg_spi_active_cfg);
+
     MXC_GPIO_Config(&bsp_pins_adc_cfg_spi_cs_out_cfg);
-
-    const mxc_gpio_cfg_t config_chip_sel_pin = {
-        .port = MXC_GPIO0,
-        .mask = MXC_GPIO_PIN_4,
-        .pad = MXC_GPIO_PAD_NONE,
-        .func = MXC_GPIO_FUNC_OUT,
-        .vssel = MXC_GPIO_VSSEL_VDDIO,
-        .drvstr = MXC_GPIO_DRVSTR_3,
-    };
-    MXC_GPIO_Config(&config_chip_sel_pin);
-
-    gpio_write_pin(&config_chip_sel_pin, true);
+    gpio_write_pin(&bsp_pins_adc_cfg_spi_cs_out_cfg, true);
 
     MXC_SYS_ClockEnable(bsp_pins_adc_cfg_spi_clock_enum);
 
@@ -64,16 +55,7 @@ int bsp_adc_config_spi_deinit()
 {
     MXC_GPIO_Config(&bsp_pins_adc_cfg_spi_high_z_cfg);
 
-    const mxc_gpio_cfg_t config_chip_sel_pin = {
-        .port = MXC_GPIO0,
-        .mask = MXC_GPIO_PIN_4,
-        .pad = MXC_GPIO_PAD_NONE,
-        .func = MXC_GPIO_FUNC_IN,
-        .vssel = MXC_GPIO_VSSEL_VDDIO,
-        .drvstr = MXC_GPIO_DRVSTR_0,
-    };
-    gpio_write_pin(&config_chip_sel_pin, false);
-    MXC_GPIO_Config(&config_chip_sel_pin);
+    MXC_GPIO_Config(&bsp_pins_adc_cfg_spi_cs_high_z_cfg);
 
     MXC_SYS_ClockDisable(bsp_pins_adc_cfg_spi_clock_enum);
 

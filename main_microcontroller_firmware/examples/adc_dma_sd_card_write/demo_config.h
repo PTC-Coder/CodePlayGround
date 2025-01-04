@@ -14,14 +14,14 @@
 
 // the length of the WAVE file to write to the SD card, a positive integer, long file durations will tale a long time to write
 // max value 4k seconds, about 70 minutes (we will remove this limitation in the final code, limited for the demo for simplicity).
-#define DEMO_CONFIG_AUDIO_FILE_LEN_IN_SECONDS (5)
+#define DEMO_CONFIG_AUDIO_FILE_LEN_IN_SECONDS (10)
 
 // comment or uncomment sample rates to add them to the test
 const Wave_Header_Sample_Rate_t demo_sample_rates_to_test[] = {
-    WAVE_HEADER_SAMPLE_RATE_24kHz,
-    WAVE_HEADER_SAMPLE_RATE_48kHz,
-    WAVE_HEADER_SAMPLE_RATE_96kHz,
-    WAVE_HEADER_SAMPLE_RATE_192kHz,
+    //WAVE_HEADER_SAMPLE_RATE_24kHz,
+    //WAVE_HEADER_SAMPLE_RATE_48kHz,
+    //WAVE_HEADER_SAMPLE_RATE_96kHz,
+    //WAVE_HEADER_SAMPLE_RATE_192kHz,
     WAVE_HEADER_SAMPLE_RATE_384kHz,
 };
 
@@ -29,7 +29,7 @@ const uint32_t DEMO_CONFIG_NUM_SAMPLE_RATES_TO_TEST = sizeof(demo_sample_rates_t
 
 // comment or uncomment bit depths to add them to the test
 const Wave_Header_Bits_Per_Sample_t demo_bit_depths_to_test[] = {
-    WAVE_HEADER_16_BITS_PER_SAMPLE,
+    //WAVE_HEADER_16_BITS_PER_SAMPLE,
     WAVE_HEADER_24_BITS_PER_SAMPLE,
 };
 

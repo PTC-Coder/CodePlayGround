@@ -18,9 +18,6 @@ SBT=0
 BSP_SEARCH_DIR := $(abspath ../../)
 BOARD = BSP
 
-PROJ_CFLAGS+=-mno-unaligned-access
-MXC_OPTIMIZE_CFLAGS = -O2
-
 # do manual pin config, don't use the pin constants in msdk/Libraries/PeriphDrivers/Source/SYS/pins_me14.c
 # this means we need to explicitly set up all the pins for the peripherals we use
 PROJ_CFLAGS += -DMSDK_NO_GPIO_CLK_INIT
@@ -58,3 +55,5 @@ IPATH += ../../lib/utils/
 VPATH += ../../lib/utils/
 
 PROJ_LDFLAGS += -Wl,--print-memory-usage
+
+MXC_OPTIMIZE_CFLAGS = -O2

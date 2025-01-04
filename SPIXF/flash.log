@@ -1,4 +1,3 @@
-Warn : could not read product string for device 0x18d1:0x4ee1: Entity not found
 Info : CMSIS-DAP: SWD supported
 Info : CMSIS-DAP: Atomic commands supported
 Info : CMSIS-DAP: Test domain timer supported

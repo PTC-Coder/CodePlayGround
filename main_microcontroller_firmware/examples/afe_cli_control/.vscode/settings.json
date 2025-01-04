@@ -69,5 +69,8 @@
     "C_Cpp.default.defines": [],
     "C_Cpp.default.forcedInclude": [
         "${workspaceFolder}/build/project_defines.h"
-    ]
+    ],
+    "files.associations": {
+        "cstdio": "cpp"
+    }
 }
