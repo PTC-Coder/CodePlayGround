@@ -443,6 +443,9 @@ enum lfs_error {
     err = lfs_mount(&lfs, &cfg);
     if (err) {
         printf("Failed to mount filesystem.\n");
+
+        //Format the flash drive if the file system is not mountable
+        //Might not want to do this everytime.
         printf("Formatting...\n");
         err = lfs_format(&lfs, &cfg);
         if (err) {
@@ -457,18 +460,17 @@ enum lfs_error {
         }
     }
     printf("File system mounted successfully\n");
-
     
     // Write to a file
-    err = lfs_file_open(&lfs, &file, "myfile", LFS_O_RDWR | LFS_O_CREAT);
+    err = lfs_file_open(&lfs, &file, "test.txt", LFS_O_RDWR | LFS_O_CREAT);
     if (err) {
         printf("Failed to open file for writing: error %d\n", err);
         lfs_unmount(&lfs);
         return err;
     }
-    printf("myfile.txt opened for write successfully\n");
+    printf("test.txt opened for write successfully\n");
 
-    char *data = "Hello, LittleFS on MAX32666!";
+    char *data = "Hello, LittleFS on MAX32666!  This is a test writing of a file.\n Hope it works!\n";
     lfs_ssize_t written = lfs_file_write(&lfs, &file, data, strlen(data));
     if (written < 0) {
         printf("Failed to write to file: error %d\n", written);
@@ -476,7 +478,7 @@ enum lfs_error {
         lfs_unmount(&lfs);
         return written;
     }
-    printf("myfile written successfully. %d written\n", written);
+    printf("test.txt written successfully. %d written\n", written);
 
     //Sync Flash after write
     err = lfs_file_sync(&lfs, &file);
@@ -516,8 +518,10 @@ enum lfs_error {
 
 
     // Read from the file
+    printf("Opening test.txt for read only mode.\n");
+
     char buf[NAND_BLOCK_SIZE] = {0};
-    err = lfs_file_open(&lfs, &file, "myfile", LFS_O_RDONLY);
+    err = lfs_file_open(&lfs, &file, "test.txt", LFS_O_RDONLY);
     if (err == LFS_ERR_NOENT){
          printf("File does not exist\n");
     }
@@ -537,7 +541,7 @@ enum lfs_error {
 
     lfs_file_close(&lfs, &file);
 
-    printf("Read from file: %s\n", buf);
+    printf("Read content from file:\n %s\n", buf);
 
     // Unmount the filesystem
     lfs_unmount(&lfs);
