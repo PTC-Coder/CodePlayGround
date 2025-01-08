@@ -69,4 +69,6 @@ C:/Users/ptcha/OneDrive/Documents/GitHub/CodePlayGround/SPIXF/build/main.o: \
  c:\maximsdk2\tools\gnutools\10.3\arm-none-eabi\include\machine\stdlib.h \
  c:\maximsdk2\tools\gnutools\10.3\arm-none-eabi\include\alloca.h \
  c:\maximsdk2\tools\gnutools\10.3\arm-none-eabi\include\assert.h \
- littlefs/lfs_util.h
+ littlefs/lfs_util.h \
+ c:\maximsdk2\tools\gnutools\10.3\arm-none-eabi\include\time.h \
+ c:\maximsdk2\tools\gnutools\10.3\arm-none-eabi\include\machine\time.h

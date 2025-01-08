@@ -41,6 +41,7 @@
 #include "led.h"
 #include "lfs.h"
 #include "lfs_util.h" 
+#include "time.h"
 
 /***** Definitions *****/
 #define EXT_FLASH_BAUD 8000000 /* SPI clock rate to communicate with the external flash */
@@ -460,25 +461,64 @@ enum lfs_error {
         }
     }
     printf("File system mounted successfully\n");
-    
-    // Write to a file
-    err = lfs_file_open(&lfs, &file, "test.txt", LFS_O_RDWR | LFS_O_CREAT);
+
+    // Define your struct
+    typedef struct {
+        int id;
+        char name[20];
+        float temperature_c;
+        struct tm setDateTime;
+    } MyData;
+
+    struct tm newTime = {
+		.tm_year = 2025 - 1900U,
+		.tm_mon = 1 - 1U,
+		.tm_mday = 8U,
+		.tm_hour = 3U,
+		.tm_min = 52U,
+		.tm_sec = 0U
+	};
+
+    MyData data = {1, "Magpie Recorder", 25.2, newTime};
+
+
+    // Write the struct to the file
+    err = lfs_file_open(&lfs, &file, "setup.bin", LFS_O_RDWR | LFS_O_CREAT);
     if (err) {
         printf("Failed to open file for writing: error %d\n", err);
         lfs_unmount(&lfs);
         return err;
     }
-    printf("test.txt opened for write successfully\n");
 
-    char *data = "Hello, LittleFS on MAX32666!  This is a test writing of a file.\n Hope it works!\n";
-    lfs_ssize_t written = lfs_file_write(&lfs, &file, data, strlen(data));
-    if (written < 0) {
-        printf("Failed to write to file: error %d\n", written);
+    //****Note that the data type here is lfs_size_t and NOT the lfs_ssize_t we used for writing just the string data.
+    lfs_size_t struct_written = lfs_file_write(&lfs, &file, &data, sizeof(MyData));
+    if (struct_written != sizeof(MyData)) {
+        printf("Failed to write struct data to file: error %d\n", struct_written);
         lfs_file_close(&lfs, &file);
         lfs_unmount(&lfs);
-        return written;
+        return struct_written;
     }
-    printf("test.txt written successfully. %d written\n", written);
+    printf("setup.bin written successfully. %d written\n", struct_written);
+
+    
+    // // Write to a file
+    // err = lfs_file_open(&lfs, &file, "test.txt", LFS_O_RDWR | LFS_O_CREAT);
+    // if (err) {
+    //     printf("Failed to open file for writing: error %d\n", err);
+    //     lfs_unmount(&lfs);
+    //     return err;
+    // }
+    // printf("test.txt opened for write successfully\n");
+
+    // char *data = "Hello, LittleFS on MAX32666!  This is a test writing of a file.\n Hope it works!\n";
+    // lfs_ssize_t written = lfs_file_write(&lfs, &file, data, strlen(data));
+    // if (written < 0) {
+    //     printf("Failed to write to file: error %d\n", written);
+    //     lfs_file_close(&lfs, &file);
+    //     lfs_unmount(&lfs);
+    //     return written;
+    // }
+    // printf("test.txt written successfully. %d written\n", written);
 
     //Sync Flash after write
     err = lfs_file_sync(&lfs, &file);
@@ -538,10 +578,43 @@ enum lfs_error {
         lfs_unmount(&lfs);
         return read;
     }
+    lfs_file_close(&lfs, &file);    
+    printf("Reading content from test.txt file:\n %s\n", buf);
 
+
+
+    //////  Read struct from setup.prm file
+    printf("Opening setup.bin for read only mode.\n");    
+
+    err = lfs_file_open(&lfs, &file, "setup.bin", LFS_O_RDONLY);
+    if (err == LFS_ERR_NOENT){
+         printf("File does not exist\n");
+    }
+    else if (err) {
+        printf("Failed to open file for reading: error %d\n", err);
+        lfs_unmount(&lfs);
+        return err;
+    }
+
+    MyData readData;
+
+    //Note that the data type here is lfs_size_t and not the lfs_ssize_t we used for reading just the string data.
+    lfs_size_t struct_read = lfs_file_read(&lfs, &file, &readData, sizeof(MyData));
+    if (struct_read != sizeof(MyData)) {
+        printf("Failed to retrieve struct data from file: error %d\n", read);
+        lfs_file_close(&lfs, &file);
+        lfs_unmount(&lfs);
+        return struct_read;
+    }
+
+    static uint8_t dateTimeStr[128];
+
+    //Convert datetime type to string
+    strftime((char*)dateTimeStr, 128, "%F %TZ", &readData.setDateTime);
+
+    printf("ID: %d, Name: %s, Temperature(°C): %f, Set Date/Time: %s", readData.id, readData.name, readData.temperature_c, dateTimeStr);
+	
     lfs_file_close(&lfs, &file);
-
-    printf("Read content from file:\n %s\n", buf);
 
     // Unmount the filesystem
     lfs_unmount(&lfs);

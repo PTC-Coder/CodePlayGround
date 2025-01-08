@@ -73,7 +73,8 @@
         "ext_flash.h": "c",
         "max32665.h": "c",
         "mxc_sys.h": "c",
-        "mxc_device.h": "c"
+        "mxc_device.h": "c",
+        "time.h": "c"
     }
 }
 
